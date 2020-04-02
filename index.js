@@ -17,6 +17,4 @@ server.listen(PORT,()=>{//cambiar a 30000 en desarollo
     console.log('server conectado en el puerto: '+server.address().port)
 });
 
-app.get('/',(req,res,next)=>{
-    res.send({a:'hola'});
-});
+const  usuarioRoute= require('./public/rutas/usuarioRoute')(app);
