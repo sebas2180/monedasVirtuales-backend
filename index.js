@@ -18,3 +18,4 @@ server.listen(PORT,()=>{//cambiar a 30000 en desarollo
 });
 
 const  usuarioRoute= require('./public/rutas/usuarioRoute')(app);
+ require('./public/database/sequelize');

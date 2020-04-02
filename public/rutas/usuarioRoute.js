@@ -1,10 +1,8 @@
 
 
-
+const usuario = require('../Controllers/usuarioController');
 function usuarioRoute(app){
-    app.get('/',(req,res,next)=>{
-        res.send({a:'hola'});
-    });
+    app.get('/',usuario.getUsuarios);
 }
 
 module.exports=usuarioRoute;
