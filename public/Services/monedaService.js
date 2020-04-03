@@ -1,7 +1,6 @@
-const monedaModel = require('../database/monedaModel')();
+const monedaModel = require('../../database/monedaModel')();
 module.exports={
-  getMonedasService:    ()  =>
-        new Promise((resolve,reject)=>{
+  getMonedasService:    (callback)  =>
             monedaModel.findAll()
                .then(
                    resp=>{
@@ -10,16 +9,14 @@ module.exports={
                            msj:'Monedas encontradas',
                            monedas: resp
                          }
-                
-                      resolve(sendInfo);
+                      return callback(sendInfo);
                     }
                )
                .catch(
                  err=>{
                    reject(err);
                  }
-               )
-       }),
+  ),
   addMoneda: function (mon,callback){
    // new Promise((resolve,reject)=>{
       var moneda = new monedaModel();
@@ -74,7 +71,7 @@ module.exports={
   },
   updateCotizacion: (mon,callback)=>{
     monedaModel.update(
-                        {importe: mon.cotizacion},
+                        {cotizacion: mon.cotizacion},
                         {where:{id:mon.id}}
                     ).then(
                       resp=>{

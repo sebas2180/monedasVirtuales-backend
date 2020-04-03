@@ -5,11 +5,9 @@ const usuarioService =require('../Services/monedaService');
 
 module.exports = {
     getMonedas : (req,res,next)=>{
-        usuarioService.getMonedasService().then(
-          resp=>{
-              return res.send(resp);
-          }
-      )
+        usuarioService.getMonedasService((callback)=>{
+            return res.send(callback);
+        });
     },
     addMoneda :  async (req,res,next)=>{
 
