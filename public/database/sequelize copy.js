@@ -15,7 +15,7 @@ const sequelize = new Sequelize('heroku_9ec3058ce556a10', 'b85c9c21359917', '7f8
 //       timestamps: false
 //   }
 //   });
-  
+  const a = '';
   sequelize.authenticate()
     .then(() => {
       console.log('Conectado')
