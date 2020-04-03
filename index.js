@@ -8,8 +8,9 @@ const morgan = require('morgan');
 const bodyParser = require('body-parser');
 const server = http.createServer(app);
 const flash = require('connect-flash');
+const fileUpload = require('express-fileupload');
 
-
+app.use(fileUpload());
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(flash());
 app.use(bodyParser.json());
@@ -35,6 +36,6 @@ app.all('*', function(req, res, next) {
     next();
 });
 
-
+const  monedaRoute= require('./public/rutas/monedaRoute')(app);
 const  usuarioRoute= require('./public/rutas/usuarioRoute')(app);
  require('./public/database/sequelize');
