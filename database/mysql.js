@@ -34,7 +34,7 @@ dbConnection: function () {
     //     dateStrings:true
     // });
 
-    console.log('conexion a BD exitosa');
+    console.log('conexion a BD exitosa.');
     connection.connect();
     return connection;
 }
