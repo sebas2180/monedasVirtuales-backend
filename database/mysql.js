@@ -3,50 +3,32 @@
 const mysql = require('mysql2');
 
 var connection;
-var env = process.argv[2] || 'dev';
-var db_config;
-console.log(env);
-switch (env) {
-    case 'dev':
-          db_config={
-            host: 'localhost',
-            user: 'root',
-            password: '1234',
+ 
+ 
+  
+// var db_config={
+//             host: 'localhost',
+//             user: 'root',
+//             password: '1234',
+//             database: 'crytoinfo',
+//             insecureAuth : true,
+//             port: 3306,
+//             dateStrings:true
+//         }
+ 
+var  db_config={
+            host: 'us-cdbr-iron-east-01.cleardb.net',
+            user: 'heroku_9ec3058ce556a10',
+            password: 'b85c9c21359917',
             database: 'crytoinfo',
             insecureAuth : true,
             port: 3306,
             dateStrings:true
-        }
-        break;
-    case 'prod':
-          db_config={
-            host: 'localhost',
-            user: 'root',
-            password: '1234',
-            database: 'crytoinfo',
-            insecureAuth : true,
-            port: 3306,
-            dateStrings:true
-        }
-        break;
 }
+ 
 module.exports = {
  
 dbConnection: function () {
-
-    connection = mysql.createConnection(db_config);
-
-
-    // var db_config={
-    //     host: 'localhost',
-    //     user: 'root',
-    //     password: '1234',
-    //     database: 'crytoinfo',
-    //     insecureAuth : true,
-    //     port: 3306,
-    //     dateStrings:true
-    // }
-    // console.log('a');
 
     connection = mysql.createConnection(db_config);
 
