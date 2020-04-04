@@ -5,6 +5,7 @@ const mysql = require('mysql2');
 var connection;
 var env = process.argv[2] || 'dev';
 var db_config;
+console.log(env);
 switch (env) {
     case 'dev':
           db_config={
