@@ -16,13 +16,13 @@ var connection;
 //         }
  
 var  db_config={
-    //     host: 'us-cdbr-iron-east-01.cleardb.net',
-    //     user: 'bb4140aeaa24a0',
-    //     password: 'af327668',
-    //     // database: 'heroku_3f3fe830ae5ac81',
-    //     insecureAuth : true,
-    //     port: 3306,
-    //     dateStrings:true
+        host: 'us-cdbr-iron-east-01.cleardb.net',
+        user: 'bb4140aeaa24a0',
+        password: 'af327668',
+        // database: 'heroku_3f3fe830ae5ac81',
+        insecureAuth : true,
+        port: 3306,
+        dateStrings:true
 }
  
 module.exports = {
