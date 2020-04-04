@@ -5,6 +5,7 @@ const usuarioService =require('../Services/monedaService');
 
 module.exports = {
     getMonedas : (req,res,next)=>{
+        console.log('get monedas');
         usuarioService.getMonedasService((callback)=>{
             return res.send(callback);
         });
