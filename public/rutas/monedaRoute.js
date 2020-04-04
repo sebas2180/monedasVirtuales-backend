@@ -1,7 +1,8 @@
 
 
 const moneda = require('../Controllers/monedaController');
-function usuarioRoute(app){
+function usuarioRoute(app,passport){
+    
     app.get('/getMonedas',moneda.getMonedas);
 
     app.post('/addMoneda',moneda.addMoneda);

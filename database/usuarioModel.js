@@ -26,6 +26,18 @@ module.exports= () =>{
             type: Sequelize.STRING,
             notEmpty: true
         },
+        password: {
+            type: Sequelize.STRING,
+            notEmpty: true
+        },
+        rol: {
+            type: Sequelize.STRING,
+            notEmpty: true
+        },
+        createAt: {
+            type: Sequelize.DATE,
+            field: 'create_at'
+        }
     },
     {
       tableName: 'usuario'

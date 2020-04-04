@@ -23,6 +23,26 @@ server.listen(PORT,()=>{//cambiar a 30000 en desarollo
     console.log('server conectado en el puerto: '+server.address().port)
 });
 
+////passport
+const Sequelize =require('./passport/auth.js')(app,passport);
+var crypto            = require('crypto');
+var LocalStrategy     = require('passport-local').Strategy;
+var sess              = require('express-session');
+var Store             = require('express-session').Store;
+var BetterMemoryStore = require('session-memory-store')(sess);
+
+var store = new BetterMemoryStore({ expires: 60 * 60 * 1000, debug: true });
+app.use(sess({
+   name: 'JSESSION',
+   secret: 'MYSECRETISVERYSECRET',
+   store:  store,
+   resave: true,
+   saveUninitialized: true
+}));
+app.use(flash());
+app.use(passport.initialize());
+app.use(passport.session());
+/////
 
 app.options("/*", function(req, res, next) {
     res.header('Access-Control-Allow-Origin', '*');
@@ -35,7 +55,7 @@ app.all('*', function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     next();
 });
-
-const  monedaRoute= require('./public/rutas/monedaRoute')(app);
-const  usuarioRoute= require('./public/rutas/usuarioRoute')(app);
- require('./public/database/sequelize');
+const  passportRoute= require('./public/rutas/passportRoute')(app,passport);
+const  monedaRoute= require('./public/rutas/monedaRoute')(app,passport);
+const  usuarioRoute= require('./public/rutas/usuarioRoute')(app,passport);
+ require('./database/sequelize');
