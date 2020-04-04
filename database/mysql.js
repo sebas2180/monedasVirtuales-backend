@@ -70,7 +70,7 @@ dbConnection: function () {
   return connection;
 }
  
-}
+
 
 
 };
