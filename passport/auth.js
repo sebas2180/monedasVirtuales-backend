@@ -24,20 +24,25 @@ const usuarioService =require('../public/Services/usuarioService');
       passwordField: 'password',
       passReqToCallback: true //passback entire req to call back
     } , function (req, usuario, password, done){
-      console.log(usuario);
+       
           if(!usuario || !password ) { return done(null, false, req.flash('message','All fields are required.')); }
-          var salt = '7fa73b47df808d36c5fe328546ddef8b9011b2c6';
-          
-          
-          console.log("select * from usuario where usuario = ?", [usuario]);
-
-          connection.query("select * from usuario where usuario = ?", [usuario], function(err, rows){ 
+         // var salt = '7fa73b47df808d36c5fe328546ddef8b9011b2c6';
+      
+          // User.findAll().then(
+          //   res1=>{
+          //     console.log(res1);
+          //   }
+          // )
+          var linea = "select * from usuario where usuario =\'"+usuario+'\'';
+          console.log('linea:    '+linea);
+          connection.query(linea,    function(err, rows){ 
               console.log(rows);
             if (err) return done(req.flash('message',err));
             if(!rows.length){ 
               return done(null, false, req.flash('message','Invalid username or password.')); 
             }else{
               console.log('password  :  '+password);
+              var salt = '7fa73b47df808d36c5fe328546ddef8b9011b2c6';
               salt = salt+''+password;
               var encPassword = crypto.createHash('sha1').update(salt).digest('hex');
               var dbPassword  = rows[0].password;
@@ -59,7 +64,7 @@ const usuarioService =require('../public/Services/usuarioService');
     async (req, usuario, password, done) => {
       const user = await  User.findOne({
         where: {  usuario: 'sebas'      }     });
-      console.log(user);
+     // console.log(user);
       if(user) {
         return done(null, false, req.flash('signupMessage', 'The Email is already Taken.'));
       } else {

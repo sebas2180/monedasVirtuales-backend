@@ -52,12 +52,14 @@ module.exports={
        },
        createUsuario:(usuario,callback)=>{
        // console.log('usuarioooo');
-        //console.log(usuario.password);
+        console.log(usuario.password);
         var salt = '7fa73b47df808d36c5fe328546ddef8b9011b2c6';
+        var user = (usuario.usuario);
         salt = salt+''+usuario.password;
         var encPassword = crypto.createHash('sha1').update(salt).digest('hex');
+        console.log(encPassword);
         const newUser = new usuarioModel();
-        newUser.usuario= usuario.usuario;
+        newUser.usuario= user;
         newUser.password = encPassword;
         newUser.pais= usuario.pais;
         newUser.email = usuario.email;
@@ -65,6 +67,7 @@ module.exports={
         newUser.rol = 'cliente';
         newUser.save().then(
           respCreate=>{
+            console.log(respCreate);
               const cb= {
                 status:753,
                 msj:"Usuario creado con exito!"
