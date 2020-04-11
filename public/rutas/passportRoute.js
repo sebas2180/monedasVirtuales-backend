@@ -1,12 +1,14 @@
-
+//const jwt = require('jsonwebtoken');
+//var verifyToken = require('./verifyToken');
 var passportController = require('../Controllers/passportController');
-var crypto            = require('crypto');
+//var crypto            = require('crypto');
     function usuarioRoute(app,passport){
        
         app.post('/signup',passportController.signup);
 
         app.post('/login', function(req, res, next) {
         passport.authenticate('local', function(err, user, info) {
+          //console.log(req.body.usuario);
           if (err) { 
             return next(err); 
           }
@@ -18,19 +20,29 @@ var crypto            = require('crypto');
              success:'Contraseña y/o usuario no valido'
           }
           res.header('Cache-Control', 'private, no-cache, no-store, must-revalidate');
-              
           return res.send(JSON.stringify(devolver)); }
           }else{
             req.logIn(user, function(err) {
               if (err) { return next(err); }
               console.log('logeado');
-              const devolver={
-                status:703,
-                success:'usuario logeado',
-                user: user
-              }
-              res.header('Cache-Control', 'private, no-cache, no-store, must-revalidate');
-              return res.send((devolver));
+              // const payload = {
+              //   check:  true,
+              //   usuario: req.body.usuario,
+              //   rol: req.body.rol
+              //  };
+              //  const token = jwt.sign(payload, app.get('llave'), {
+              //   expiresIn: 1440
+              //  });
+               verifyToken.login(req.body.usuario,req.body.rol,(token)=>{
+                const devolver={
+                  status:703,
+                  success:'usuario logeado',
+                  user: user,
+                  token: token
+                }
+                res.header('Cache-Control', 'private, no-cache, no-store, must-revalidate');
+                return res.send(JSON.stringify(devolver));
+               })
             });
           }       
         })(req, res, next);   

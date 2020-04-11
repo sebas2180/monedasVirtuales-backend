@@ -1,15 +1,21 @@
 
 
 const moneda = require('../Controllers/monedaController');
+ 
 function usuarioRoute(app,passport){
+    //console.log(pruebaa);
     
-    app.get('/getMonedas',moneda.getMonedas);
+    app.get('/getMonedas',verifyToken.verificar, moneda.getMonedas);
 
-    app.post('/addMoneda',moneda.addMoneda);
+    app.get('/getImportes',verifyToken.verificar, moneda.getImporte);
 
-    app.post('/updateImporte',moneda.updateImporte);
+    app.post('/addMoneda',verifyToken.verificar,moneda.addMoneda);
 
-    app.post('/updateCotizacion',moneda.updateCotizacion);
+    app.post('/updateImporte',verifyToken.verificar,moneda.updateImporte);
+
+    app.post('/updateCotizacion',verifyToken.verificar,moneda.updateCotizacion);
+     
+    app.get('/getNombreMonederos', moneda.getNombreMonederos);
 }
 
 module.exports=usuarioRoute;

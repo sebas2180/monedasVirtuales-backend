@@ -1,25 +1,83 @@
 
 
-const usuarioService =require('../Services/monedaService');
+const monedaService =require('../Services/monedaService');
 
 
 module.exports = {
-    getMonedas : (req,res,next)=>{
-        console.log('get monedas');
-        usuarioService.getMonedasService((callback)=>{
+    getImporte :   (req,res,next)=>{
+        monedaService.getImportes(req.payload.usuario,(callback)=>{
+
             return res.send(callback);
         });
     },
+    getMonedas : async (req,res,next)=>{
+        var sendMensaje = [];
+        var BTC = [] , ETH=[],LTC= [];
+        var symbols = [];
+         monedaService.getSimbolos(req.payload.usuario,(callback)=>{
+            callback.forEach(element => {
+                symbols.push(element['dataValues']['symbol']);
+            });
+            let sinRepetidos = symbols.filter((valor, indiceActual, arreglo) => arreglo.indexOf(valor) === indiceActual);
+            console.log(sinRepetidos);
+            var index =0;
+            console.log(sinRepetidos.length);
+            if(sinRepetidos==0){
+                sendMensaje={   
+                    status: 771,
+                    BTC:BTC,
+                    LTC:LTC,
+                    ETC:ETH
+                };
+            return res.send(sendMensaje);
+            }
+            sinRepetidos.forEach(symb => {
+                ++index;
+                console.log('forEach:    '+symb);
+                 monedaService.getRegistroMoneda(symb,req.payload.usuario).then(
+                    callback2=>{
+                        console.log(callback2)                       //console.log(callback2);
+                        if(symb === 'BTC'){
+                            BTC.push(callback2);
+                        }
+                        if(symb === 'ETH'){
+                            ETH.push(callback2);
+                            console.log(BTC);
+                        }
+                        if(symb === 'LTC'){             
+                            LTC.push(callback2);
+                            console.log(LTC);
+                        } 
+                        if(sinRepetidos[sinRepetidos.length -1 ]===symb){
+                            //console.log(sendMensaje);
+                            sendMensaje={   status: 770,
+                                            BTC:BTC,
+                                            LTC:LTC,
+                                            ETC:ETH
+                                        };
+                            return res.send(sendMensaje);
+                        }
+                     }
+                 )
+
+            })
+           
+        }) 
+            // console.log(sendMensaje);
+            // sendMensaje={BTC:BTC,LTC:LTC,ETC:ETH};
+            // return res.send(sendMensaje);
+        
+    },
     addMoneda :  async (req,res,next)=>{
 
-        usuarioService.addMoneda(req.body,(resp)=>{
+        monedaService.addMoneda(req.body,(resp)=>{
             console.log(resp);
             return res.end(JSON.stringify(resp));
         })
     },
     updateImporte :   (req,res,next)=>{
        // console.log(req.body);
-        usuarioService.updateImporte(req.body,(resp)=>{
+       monedaService.updateImporte(req.body,(resp)=>{
             console.log(resp);
             return res.send((resp));
         })
@@ -27,10 +85,20 @@ module.exports = {
     updateCotizacion :  (req,res,next)=>{
         //console.log(req);
         console.log(req.body);
-        usuarioService.updateCotizacion(req.body,(resp)=>{
+        monedaService.updateCotizacion(req.body,(resp)=>{
             console.log('resp')
             console.log(resp);
            
+            return res.send((resp));
+        })
+    }
+    ,
+    getNombreMonederos :  (req,res,next)=>{
+        var aux = req.query.id_usuario ;
+        console.log(aux);
+         
+        monedaService.getNombreMonederos(req.query.id_usuario,(resp)=>{
+           // console.log(resp);
             return res.send((resp));
         })
     }
