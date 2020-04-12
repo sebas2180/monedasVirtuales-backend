@@ -16,6 +16,10 @@ function usuarioRoute(app,passport){
     app.post('/updateCotizacion',verifyToken.verificar,moneda.updateCotizacion);
      
     app.get('/getNombreMonederos', moneda.getNombreMonederos);
+
+    app.get('/getIdMonederos', moneda.getIdMonederos);
+
+    app.get('/getNombreMonedero', moneda.getNombreMonedero);
 }
 
 module.exports=usuarioRoute;

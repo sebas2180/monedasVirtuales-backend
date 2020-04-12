@@ -42,6 +42,22 @@ module.exports={
           return callback(respSimbolos);
         }
     )}
+    ,getNombreMonedero:(id_monedero,callback)=>{
+      console.log('id_monedero    '+id_monedero);
+      monedaModel.findOne({ attributes: ['monedero'],where : { id : id_monedero }})
+      .then(
+        respNombre=>{
+            return callback(respNombre);
+          }
+      )}
+    ,getIdMonederos:(nombreMonedero,usuario,callback)=>{
+    console.log('el usuario'+usuario);
+    monedaModel.findOne({ attributes: ['id'],where : { id_usuario : usuario,monedero:nombreMonedero }})
+    .then(
+      resIdMonedero=>{
+          return callback(resIdMonedero);
+        }
+    )}
   ,
   getRegistroMoneda:  (symbol,usuario)=>{
     return new Promise((resolve,reject)=>{

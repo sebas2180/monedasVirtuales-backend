@@ -9,6 +9,8 @@ function contratoRoute(app,passport){
 
     app.get('/getContrato',contrato.getContrato);
 
+    app.get('/getContratos',contrato.getContratos);
+
     app.get('/activarContrato',contrato.activarContrato);
  
         

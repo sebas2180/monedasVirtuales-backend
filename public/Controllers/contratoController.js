@@ -25,6 +25,15 @@ module.exports = {
             res.send(cb);
         })
     },
+    getContratos:(req,res,next)=>{
+        var contrato={
+            id_usuario: req.query.id_usuario 
+        }
+        console.log(req.query);
+        contatoService.getContratos(contrato,(cb)=>{
+            res.send(cb);
+        })
+    },
     activarContrato:(req,res,next)=>{
         var contrato={
             id_usuario: req.query.id_usuario,

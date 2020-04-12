@@ -102,7 +102,15 @@ module.exports={
                     return cb(res);
                 }
             )
-    },activarContrato:(contrato,cb)=>{
+    },getContratos:(contrato,cb)=>{
+        contratoModel.findAll({where:{ id_usuario:contrato.id_usuario }}).then(
+            res=>{
+                console.log(res['dataValues']);
+                return cb(res);
+            }
+        )
+}   ,
+    activarContrato:(contrato,cb)=>{
         var diaActual = new Date;
         contratoModel.update({fecha_inicio: diaActual,pagos_registrados:0,status:'Activo' },
         {where:
@@ -123,7 +131,7 @@ module.exports={
                 }
             }
         )
-},registrarPago:(contrato,cb)=>{
+    },registrarPago:(contrato,cb)=>{
    var aux_id_moneda ;
         monedaModel.findOne({where: {  id : contrato.id_monedero  }}).then(
             resFindMoney => {aux_id_moneda = (resFindMoney['dataValues']['id']);}
@@ -199,6 +207,6 @@ module.exports={
             }
         }
     )
-}
+    }
         
 }

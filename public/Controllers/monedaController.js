@@ -101,5 +101,20 @@ module.exports = {
            // console.log(resp);
             return res.send((resp));
         })
+    },
+    getNombreMonedero :  (req,res,next)=>{
+        var id_monedero = req.query.id_monedero ;
+        console.log(id_monedero);
+         
+        monedaService.getNombreMonedero(id_monedero,(resp)=>{
+           // console.log(resp);
+            return res.send((resp));
+        })
+    },getIdMonederos :(req,res,next)=>{
+        console.log(req.query);
+        monedaService.getIdMonederos(req.query.monedero,req.query.id_usuario,(resp)=>{
+            
+             return res.send((resp));
+         })
     }
 }
