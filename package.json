@@ -1,9 +1,6 @@
 {
   "name": "backend-crypto",
   "version": "1.0.0",
-  "engines": {
-    "node": "10.16.x"
-  },
   "description": "",
   "main": "index.js",
   "scripts": {
