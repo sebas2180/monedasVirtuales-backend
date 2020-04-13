@@ -27,7 +27,7 @@ module.exports={
                  }
   )
   ,getSimbolos:(usuario,callback)=>{
-    console.log('el usuario'+usuario);
+    //console.log('el usuario'+usuario);
     monedaModel.findAll({ attributes: ['symbol'],where : { id_usuario : usuario }},{ group :['SYMBOL'] })
     .then(
       respSimbolos=>{
@@ -35,7 +35,7 @@ module.exports={
         }
     )}
   ,getNombreMonederos:(usuario,callback)=>{
-    console.log('el usuario'+usuario);
+    //console.log('el usuario'+usuario);
     monedaModel.findAll({ attributes: ['monedero'],where : { id_usuario : usuario }},{ group :['monedero'] })
     .then(
       respSimbolos=>{

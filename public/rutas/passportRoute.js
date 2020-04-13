@@ -7,6 +7,7 @@ var passportController = require('../Controllers/passportController');
         app.post('/signup',passportController.signup);
 
         app.post('/login', function(req, res, next) {
+          console.log(req.body)
         passport.authenticate('local', function(err, user, info) {
           //console.log(req.body.usuario);
           if (err) { 
@@ -24,15 +25,6 @@ var passportController = require('../Controllers/passportController');
           }else{
             req.logIn(user, function(err) {
               if (err) { return next(err); }
-              console.log('logeado');
-              // const payload = {
-              //   check:  true,
-              //   usuario: req.body.usuario,
-              //   rol: req.body.rol
-              //  };
-              //  const token = jwt.sign(payload, app.get('llave'), {
-              //   expiresIn: 1440
-              //  });
                verifyToken.login(req.body.usuario,req.body.rol,(token)=>{
                 const devolver={
                   status:703,

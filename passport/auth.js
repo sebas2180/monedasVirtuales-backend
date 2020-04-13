@@ -23,16 +23,8 @@ const usuarioService =require('../public/Services/usuarioService');
       usernameField: 'usuario',
       passwordField: 'password',
       passReqToCallback: true //passback entire req to call back
-    } , function (req, usuario, password, done){
-       
+    } , function (req, usuario, password, done){   
           if(!usuario || !password ) { return done(null, false, req.flash('message','All fields are required.')); }
-         // var salt = '7fa73b47df808d36c5fe328546ddef8b9011b2c6';
-      
-          // User.findAll().then(
-          //   res1=>{
-          //     console.log(res1);
-          //   }
-          // )
           var linea = "select * from usuario where usuario =\'"+usuario+'\'';
           console.log('linea:    '+linea);
           connection.query(linea,    function(err, rows){ 
@@ -43,6 +35,8 @@ const usuarioService =require('../public/Services/usuarioService');
             }else{
               console.log('password  :  '+password);
               var salt = '7fa73b47df808d36c5fe328546ddef8b9011b2c6';
+              console.log(salt+'/'+password);
+              
               salt = salt+''+password;
               var encPassword = crypto.createHash('sha1').update(salt).digest('hex');
               var dbPassword  = rows[0].password;
@@ -71,6 +65,7 @@ const usuarioService =require('../public/Services/usuarioService');
         const newUser = new User();
         newUser.email = email;
         var salt = '7fa73b47df808d36c5fe328546ddef8b9011b2c6';
+        console.log(salt+'/'+password);
         salt = salt+''+password;
         var userPassword = crypto.createHash('sha1').update(salt).digest('hex');
         //         console.log('salt');

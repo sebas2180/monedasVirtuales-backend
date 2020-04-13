@@ -33,10 +33,10 @@ module.exports = {
             }
             sinRepetidos.forEach(symb => {
                 ++index;
-                console.log('forEach:    '+symb);
+               // console.log('forEach:    '+symb);
                  monedaService.getRegistroMoneda(symb,req.payload.usuario).then(
                     callback2=>{
-                        console.log(callback2)                       //console.log(callback2);
+                       // console.log(callback2)                       //console.log(callback2);
                         if(symb === 'BTC'){
                             BTC.push(callback2);
                         }

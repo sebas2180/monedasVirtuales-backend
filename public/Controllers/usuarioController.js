@@ -12,5 +12,8 @@ module.exports = {
               return res.send(resp);
           }
       )
+    },verificarToken :  (req,res,next)=>{
+      console.log('eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee');
+      return res.send({status:100,msj:'connect'});
     }
 }

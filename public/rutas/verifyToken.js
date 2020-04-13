@@ -25,55 +25,69 @@ module.exports = {
             }
             console.log('alt 4');
             res.send(sendInfo);
-        }
-        var token = req.headers.authorization.split(' ')[1];
-        token = token.split('"')[1];
-        //console.log('token   ' +token);
-        var usuario = req.headers.authorization.split(' ')[2];
-        usuario = usuario.split('\"')[1];
-        console.log('tokenVerif:  ' +token);
-        console.log(usuario);
-        if(token == null){
-            const sendInfo={
-                status: 760,
-                msj:'Error en token'
+        }else{
+           // console.log(req.headers.authorization);
+            var token = req.headers.authorization.split(' ')[1];
+            
+            console.log('mitoken    '+token);
+            if ( token !='null' ) {
+                console.log('____________________________________')
+                token = token.split('"')[1];
+                console.log('token   ' +token);
+                var usuario = req.headers.authorization.split(' ')[2];
+                usuario = usuario.split('\"')[1];
+                console.log('tokenVerif:  ' +token);
+                console.log(token);
+                if(token == null){
+                    const sendInfo={
+                        status: 760,
+                        msj:'Error en token'
+                    }
+                    console.log('alt 1');
+                    res.send(sendInfo);
+                }
+                try{
+                ( jwt.verify(token,app.get('llave')),(err,resp)=>{
+                if(err){
+                    console.log('err')
+                    const sendInfo={
+                    status: 760,
+                    msj:'Error en token'
+                    }
+                    console.log(resp);
+                    console.log('alt 2');
+                    res.send(sendInfo);
+                }
+                console.log(resp);
+                console.log('alt 3');
+                req.payload = {
+                    check:  true,
+                    usuario:  usuario
+                };
+                next();
+            })
+                req.payload = {
+                    check:  true,
+                    usuario: usuario
+                };
+                next();
+                }catch(err){
+                    console.log(err)
+                    const sendInfo={
+                        status: 760,
+                        msj:'Error en token'
+                    }
+                    console.log('alt 3');
+                    res.send(sendInfo);
+                }
+            } else {
+                const sendInfo={
+                    status: 760,
+                    msj:'Usuario no logeado'
+                }
+                console.log('alt 5');
+                res.send(sendInfo);
             }
-            console.log('alt 1');
-            res.send(sendInfo);
-        }
-        try{
-        ( jwt.verify(token,app.get('llave')),(err,resp)=>{
-        if(err){
-            console.log('err')
-            const sendInfo={
-            status: 760,
-            msj:'Error en token'
-            }
-            console.log(resp);
-            console.log('alt 2');
-            res.send(sendInfo);
-        }
-        console.log(resp);
-        console.log('alt 3');
-        req.payload = {
-            check:  true,
-            usuario:  usuario
-        };
-        next();
-    })
-        req.payload = {
-            check:  true,
-            usuario: usuario
-        };
-        next();
-        }catch(err){
-            console.log(err)
-            const sendInfo={
-                status: 760,
-                msj:'Error en token'
-            }
-            console.log('alt 3');
-            res.send(sendInfo);
         }
       }
 }
