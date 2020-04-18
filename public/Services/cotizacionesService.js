@@ -4,7 +4,7 @@ connection = mysql.dbConnection();
 module.exports={
 
     getCotizaciones: (cb)=>{
-        cotizacionesModel.findAll(   { offset: 9, limit:9,
+        cotizacionesModel.findAll(   { offset: 10, limit:10,
                                         order: [['id','DESC']]
                                     })
         .then(

@@ -25,6 +25,15 @@ module.exports = {
             res.send(cb);
         })
     },
+    getEstadisticasContratos:(req,res,next)=>{
+        var contrato={
+            id_usuario: req.query.id_usuario 
+        }
+        console.log(req.query);
+        contatoService.getEstadisticasContratos(contrato,(cb)=>{
+            res.send(cb);
+        })
+    },
     getContratos:(req,res,next)=>{
         var contrato={
             id_usuario: req.query.id_usuario 
@@ -34,6 +43,7 @@ module.exports = {
             res.send(cb);
         })
     },
+    
     activarContrato:(req,res,next)=>{
         var contrato={
             id_usuario: req.query.id_usuario,

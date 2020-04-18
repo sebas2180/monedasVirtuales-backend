@@ -5,16 +5,17 @@ const contrato = require('../Controllers/contratoController');
 function contratoRoute(app,passport){
     //console.log(pruebaa);
     
-    app.post('/crearContrato',contrato.crearContrato);
+    app.post('/crearContrato',verifyToken.verificar,contrato.crearContrato);
 
     app.get('/getContrato',contrato.getContrato);
 
     app.get('/getContratos',contrato.getContratos);
 
-    app.get('/activarContrato',contrato.activarContrato);
+    app.get('/activarContrato',verifyToken.verificar,contrato.activarContrato);
  
-        
-    app.post('/registrarPago',contrato.registrarPago);
+    app.get('/getEstadisticasContratos',verifyToken.verificar,contrato.getEstadisticasContratos);    
 
+    app.post('/registrarPago',verifyToken.verificar,contrato.registrarPago);
+     
 }
 module.exports=contratoRoute;

@@ -22,18 +22,30 @@ module.exports = {
                 }
             }
         });
-        request('https://api.decrypto.com.ar:8081/1.0/frontend/precios/', { json: true }, (err, res, body) => {
-        if (err) { return console.log(err); }    
-                var cotizacion = new cotizaciones;
-                //console.log(body['dca']);
-                cotizacion.proveedor='DeCrypto';
-                cotizacion.symbol= 'BTC';
-                cotizacion.base= 'USD';
-                cotizacion.venta= body['dcb'];
-                cotizacion.compra= body['dca'];
-                cotizacion.name= body['currency'];
-                cotizacion.save();
-        });
+        // request('https://api.decrypto.com.ar:8081/1.0/frontend/precios/', { json: true }, (err, res, body) => {
+        // if (err) { return console.log(err); }    
+        //         console.log(body);
+        //         var auxiliarUSD = body['data'][0];
+        //         var cotizacion = new cotizaciones;
+        //         cotizacion.proveedor='DeCrypto';
+        //         cotizacion.symbol= 'BTC';
+        //         cotizacion.base= 'USD';
+        //         cotizacion.venta= auxiliarUSD['dcb'];
+        //         cotizacion.compra= auxiliarUSD['dca'];
+        //         cotizacion.name='Bitcoin';
+        //         cotizacion.save();
+
+        //         var auxiliarARS = body['data'][1];
+        //         var cotizacionARS = new cotizaciones;
+    
+        //         cotizacionARS.proveedor='DeCrypto';
+        //         cotizacionARS.symbol= 'BTC';
+        //         cotizacionARS.base= 'ARS';
+        //         cotizacionARS.venta= auxiliarARS['dcb'];
+        //         cotizacionARS.compra= auxiliarARS['dca'];
+        //         cotizacionARS.name= 'Bitcoin';
+        //         cotizacionARS.save();
+        // });
         request('http://preev.com/pulse/units:btc+usd/sources:bitstamp+kraken', { json: true }, (err, res, body) => {
         if (err) { return console.log(err); }    
                 var cotizacion = new cotizaciones;
@@ -45,6 +57,20 @@ module.exports = {
                  cotizacion.compra= body['btc']['usd']['bitstamp']['last'];
                  cotizacion.name='Bitcoin';
                  cotizacion.save();
+    
+      });
+      request('https://www.coinbase.com/api/v2/assets/prices?base=USD&filter=listed&resolution=latest', { json: true }, (err, res, body) => {
+        if (err) { return console.log(err); }    
+            var cotizacion = new cotizaciones;
+            const aux = body['data'][3]['prices']
+            //console.log(aux);
+            cotizacion.proveedor='Copay';
+            cotizacion.symbol= body['data'][3]['base'];
+            cotizacion.base= body['data'][3]['currency'];
+            cotizacion.venta= aux.latest;
+            cotizacion.compra= aux.latest;
+            cotizacion.name='Ethereum';
+            cotizacion.save();
     
       });
         request('https://argenbtc.com/public/cotizacion_js.php', { json: true }, (err, res, body) => {
@@ -64,8 +90,8 @@ module.exports = {
 
         request.get({url: 'https://api.satoshitango.com/v3/ticker/ARS', jar: j}, function(err, httpResponse, html) {
             const aux = JSON.parse(httpResponse['body']);
+            //console.log(httpResponse['body']);
             const monedaRipio =( aux['data']['ticker']);
-            //console.log(monedaRipio);
             // kk
                 var cotizacionBTC = new cotizaciones;
                 cotizacionBTC.proveedor='Satoshitango';

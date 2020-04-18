@@ -1,6 +1,6 @@
 const monedaModel = require('../../database/monedaModel')();
 var Sequelize = require('sequelize');
-
+ 
 module.exports={
   getMonedasService:    (callback)  =>
             monedaModel.findAll()
@@ -34,23 +34,44 @@ module.exports={
           return callback(respSimbolos);
         }
     )}
-  ,getNombreMonederos:(usuario,callback)=>{
-    //console.log('el usuario'+usuario);
-    monedaModel.findAll({ attributes: ['monedero'],where : { id_usuario : usuario }},{ group :['monedero'] })
+  ,getMoneda:(moneda,callback)=>{
+      monedaModel.findOne({ where : { id_usuario : moneda.id_usuario , nombre : moneda.nombre_moneda, monedero : moneda.nombre_monedero }}
+                      )
+      .then(
+        resMoneda=>{
+         if ( resMoneda) { 
+          const sendInfo = {
+            status: 770 ,
+            moneda: resMoneda
+          }
+          return callback(sendInfo);
+         } else {
+          const sendInfo = {
+            status: 771 ,
+            moneda: 'null'
+          }
+          return callback(sendInfo);
+         }
+          }
+      )}
+  ,getNombreMonederos:(datos,callback)=>{
+    console.log(datos);
+    monedaModel.findAll({ attributes: ['monedero'],where : { id_usuario : datos.id_usuario,nombre:datos.nombre_moneda }},{ group :['monedero'] })
     .then(
       respSimbolos=>{
           return callback(respSimbolos);
         }
     )}
-    ,getNombreMonedero:(id_monedero,callback)=>{
+  ,getNombreMonedero:(id_monedero,callback)=>{
       console.log('id_monedero    '+id_monedero);
       monedaModel.findOne({ attributes: ['monedero'],where : { id : id_monedero }})
       .then(
         respNombre=>{
+          
             return callback(respNombre);
           }
       )}
-    ,getIdMonederos:(nombreMonedero,usuario,callback)=>{
+  ,getIdMonederos:(nombreMonedero,usuario,callback)=>{
     console.log('el usuario'+usuario);
     monedaModel.findOne({ attributes: ['id'],where : { id_usuario : usuario,monedero:nombreMonedero }})
     .then(
@@ -58,8 +79,7 @@ module.exports={
           return callback(resIdMonedero);
         }
     )}
-  ,
-  getRegistroMoneda:  (symbol,usuario)=>{
+  ,getRegistroMoneda:  (symbol,usuario)=>{
     return new Promise((resolve,reject)=>{
       console.log(usuario);
       monedaModel.findAll({ where :{symbol: symbol, id_usuario: usuario }})
@@ -119,14 +139,15 @@ module.exports={
 //        }
 // ),
   addMoneda: function (mon,callback){
-   // new Promise((resolve,reject)=>{
       var moneda = new monedaModel();
-      moneda.nombre=mon.nomsbre;
-      moneda.cotizacion=mon.cotizacion;
-      moneda.importe = 0;
+      moneda.nombre=mon.nombre;
+      moneda.monedero=mon.monedero;
+      moneda.cotizacion=0;
+      moneda.id_usuario = mon.id_usuario;
+      moneda.symbol = mon.symbol;
+      moneda.importe = mon.importe;
       moneda.save().then(
         resp=>{
-          console.log(resp['dataValues']);
           const sendInfo={
             status: 752,
             msj:'Moneda guardada' 
@@ -147,9 +168,10 @@ module.exports={
   //  })
   },
   updateImporte: (mon,callback)=>{
+    console.log(mon);
     monedaModel.update(
                         {importe: mon.importe},
-                        {where:{id:mon.id}}
+                        {where:{id:mon.id_monedero}}
                     ).then(
                       resp=>{
                         const sendInfo={
@@ -168,7 +190,6 @@ module.exports={
                         return callback(sendInfo);
                       }
                     )
-    return callback()
   },
   updateCotizacion: (mon,callback)=>{
     monedaModel.update(

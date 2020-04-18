@@ -7,6 +7,8 @@ function usuarioRoute(app,passport){
     
     app.get('/getMonedas',verifyToken.verificar, moneda.getMonedas);
 
+    app.get('/getMoneda',verifyToken.verificar,moneda.getMoneda );
+
     app.get('/getImportes',verifyToken.verificar, moneda.getImporte);
 
     app.post('/addMoneda',verifyToken.verificar,moneda.addMoneda);

@@ -8,8 +8,7 @@ var env = process.argv[2] || 'dev';
         host: 'localhost',
         logging: false,
         define: {
-          timestamps: false
-      }
+          timestamps: false      }
       });
 
     // sequelize = new Sequelize('heroku_9ec3058ce556a10', 'b85c9c21359917', '7f820141', {
