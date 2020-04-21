@@ -82,7 +82,7 @@ module.exports = {
     },
     addMoneda :  async (req,res,next)=>{
         tipoMonedaService.getTipoMonedaPorNombre(req.body.nombre,(cb)=>{
-            console.log();
+            
             moneda = {
                 nombre: req.body.nombre,
                 monedero: req.body.monedero,
