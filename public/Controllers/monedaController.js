@@ -6,7 +6,7 @@ const monedaService =require('../Services/monedaService');
 module.exports = {
     getImporte :   (req,res,next)=>{
         monedaService.getImportes(req.payload.usuario,(callback)=>{
-
+            console.log();
             return res.send(callback);
         });
     },
