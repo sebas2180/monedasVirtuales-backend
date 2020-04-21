@@ -18,7 +18,7 @@ var env = process.argv[2] || 'dev';
         dialect: 'mysql',
         port : 25060,
         host: 'db-mysql-nyc1-18623-do-user-6877514-0.a.db.ondigitalocean.com',
-        logging: false,
+        //logging: false,
         define: {
           timestamps: false,
           

@@ -121,7 +121,7 @@ module.exports={
   addMoneda: function (mon,callback){
    // new Promise((resolve,reject)=>{
       var moneda = new monedaModel();
-      moneda.nombre=mon.nomsbre;
+      moneda.nombre=mon.nombre;
       moneda.cotizacion=mon.cotizacion;
       moneda.importe = 0;
       moneda.save().then(
@@ -136,6 +136,7 @@ module.exports={
       )
       .catch(
         err=>{
+          console.log(err);
           const sendInfo={
             status: 753,
             msj:'Monedas no guardada' 
