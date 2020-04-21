@@ -13,6 +13,10 @@ var env = process.argv[2] || 'dev';
 
  
     sequelize = new Sequelize('crytoinfo', 'doadmin', 'vj4gdmbs9si2agwj', {
+      max: 5,
+      min: 0,
+      idle: 20000,
+      acquire: 20000,
       dialect: 'mysql',
       port: 25060,
       logging: false,
