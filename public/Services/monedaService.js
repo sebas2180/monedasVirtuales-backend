@@ -123,8 +123,12 @@ module.exports={
      console.log(mon);
       var moneda = new monedaModel();
       moneda.nombre=mon.nombre;
+      moneda.id_usuario = mon.id_usuario;
+      moneda.monedero = mon.monedero;
+      moneda.symbol = mon.symbol;
       moneda.cotizacion=mon.cotizacion;
-      moneda.importe = 0;
+      moneda.importe = mon.importe;
+      moneda.cotizacion = 0;
       moneda.save().then(
         resp=>{
           console.log(resp['dataValues']);
