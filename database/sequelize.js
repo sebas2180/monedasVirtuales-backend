@@ -3,23 +3,24 @@ const Sequelize = require('sequelize');
 var sequelize ;
 var env = process.argv[2] || 'dev';
 
-    sequelize = new Sequelize('crytoInfo', 'root', '1234', {
-        dialect: 'mysql',
-        host: 'localhost',
-        logging: false,
-        define: {
-          timestamps: false      }
-      });
-
-    // sequelize = new Sequelize('heroku_9ec3058ce556a10', 'b85c9c21359917', '7f820141', {
+    // sequelize = new Sequelize('crytoInfo', 'root', '1234', {
     //     dialect: 'mysql',
-    //     host: 'us-cdbr-iron-east-01.cleardb.net',
+    //     host: 'localhost',
+    //     logging: false,
     //     define: {
-    //       timestamps: false
-    //   }
+    //       timestamps: false      }
     //   });
 
-
+ 
+    sequelize = new Sequelize('crytoinfo', 'doadmin', 'vj4gdmbs9si2agwj', {
+      dialect: 'mysql',
+      port: 25060,
+      logging: false,
+      host: 'db-mysql-nyc1-18623-do-user-6877514-0.a.db.ondigitalocean.com',
+      define: {
+        timestamps: false
+    }
+    });
 
   
   sequelize.authenticate()
