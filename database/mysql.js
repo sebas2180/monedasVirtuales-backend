@@ -30,8 +30,7 @@ module.exports = {
 dbConnection: function () {
 
   connection = mysql.createConnection(db_config); // Recreate the connection, since
-                                                  // the old one cannot be reused.
-
+                                                  // the old one cannot be reused
   connection.connect(function(err) {              // The server is either down
     if(err) {                                     // or restarting (takes a while sometimes).
       console.log('error when connecting to db:', err);
@@ -42,7 +41,7 @@ dbConnection: function () {
   connection.on('error', function(err) {
     console.log('db error', err);
     if(err.code === 'PROTOCOL_CONNECTION_LOST') { // Connection to the MySQL server is usually
-      dbConnection();                         // lost due to either server restart, or a
+      this.dbConnection ;                         // lost due to either server restart, or a
     } else {                                      // connnection idle timeout (the wait_timeout
       throw err;                             // server variable configures this)
     }
