@@ -120,6 +120,7 @@ module.exports={
 // ),
   addMoneda: function (mon,callback){
    // new Promise((resolve,reject)=>{
+     console.log(mon);
       var moneda = new monedaModel();
       moneda.nombre=mon.nombre;
       moneda.cotizacion=mon.cotizacion;
