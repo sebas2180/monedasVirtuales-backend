@@ -1,14 +1,24 @@
 
-
+const transaccionService =require('../Services/transaccionService');
 const monedaService =require('../Services/monedaService');
-
+const tipoMonedaService = require ('../Services/tipo_monedaService');
 
 module.exports = {
     getImporte :   (req,res,next)=>{
         monedaService.getImportes(req.payload.usuario,(callback)=>{
-            console.log();
+
             return res.send(callback);
         });
+    },
+    getMoneda:(req,res,next)=>{
+        var moneda={
+            id_usuario: req.query.id_usuario,
+            nombre_monedero : req.query.nombre_monedero,
+            nombre_moneda : req.query.nombre_moneda
+        }
+        monedaService.getMoneda(moneda,(cb)=>{
+            res.send(cb);
+        })
     },
     getMonedas : async (req,res,next)=>{
         var sendMensaje = [];
@@ -33,10 +43,10 @@ module.exports = {
             }
             sinRepetidos.forEach(symb => {
                 ++index;
-                console.log('forEach:    '+symb);
+               // console.log('forEach:    '+symb);
                  monedaService.getRegistroMoneda(symb,req.payload.usuario).then(
                     callback2=>{
-                        console.log(callback2)                       //console.log(callback2);
+                       // console.log(callback2)                       //console.log(callback2);
                         if(symb === 'BTC'){
                             BTC.push(callback2);
                         }
@@ -69,16 +79,47 @@ module.exports = {
         
     },
     addMoneda :  async (req,res,next)=>{
+        tipoMonedaService.getTipoMonedaPorNombre(req.body.nombre,(cb)=>{
+            moneda = {
+                nombre: req.body.nombre,
+                monedero: req.body.monedero,
+                symbol: cb['symbol'],
+                importe: req.body.importe,
+                id_usuario :  req.body.id_usuario,
+                cotizacion : 0
+            }
+            transaccion = {
+                monto : treq.body.monto,
+                cotizacion_usd : req.body.cotizacion_usd,
+                tipo_moneda : req.body.nombre,
+                tipo_operacion : req.body.tipo_operacion,
+                id_usuario : req.body.id_usuario
+            }
 
-        monedaService.addMoneda(req.body,(resp)=>{
-            console.log(resp);
-            return res.end(JSON.stringify(resp));
-        })
+            monedaService.addMoneda(moneda,(resp)=>{
+                transaccionService.addTransaccion(transaccionService,(resp2)=>{
+                    console.log(resp2);
+                });
+                return res.end(JSON.stringify(resp));
+            })
+        });
     },
     updateImporte :   (req,res,next)=>{
-       // console.log(req.body);
+        console.log('___________________________________________')
+        
+        transaccion = {
+            monto_operacion : req.body.monto_operacion,
+            cotizacion_usd : req.body.cotizacion_usd,
+            tipo_moneda : req.body.nombre,
+            tipo_operacion : req.body.tipo_operacion,
+            cotizacion_usd : req.body.cotizacion_usd,
+            id_usuario : req.body.id_usuario
+        }
+        console.log(transaccion);
        monedaService.updateImporte(req.body,(resp)=>{
-            console.log(resp);
+        transaccionService.addTransaccion(transaccion,(resp2)=>{
+            console.log(resp2);
+        });
             return res.send((resp));
         })
     },
@@ -94,10 +135,12 @@ module.exports = {
     }
     ,
     getNombreMonederos :  (req,res,next)=>{
-        var aux = req.query.id_usuario ;
-        console.log(aux);
-         
-        monedaService.getNombreMonederos(req.query.id_usuario,(resp)=>{
+        var aux = req.query;
+        const datos = {
+            id_usuario: req.query.id_usuario,
+            nombre_moneda : req.query.nombre_moneda
+        }
+        monedaService.getNombreMonederos(datos,(resp)=>{
            // console.log(resp);
             return res.send((resp));
         })
@@ -110,7 +153,8 @@ module.exports = {
            // console.log(resp);
             return res.send((resp));
         })
-    },getIdMonederos :(req,res,next)=>{
+    },
+    getIdMonederos :(req,res,next)=>{
         console.log(req.query);
         monedaService.getIdMonederos(req.query.monedero,req.query.id_usuario,(resp)=>{
             
