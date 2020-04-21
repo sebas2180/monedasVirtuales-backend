@@ -12,11 +12,16 @@ var env = process.argv[2] || 'dev';
     //   }
     //   });
 
-    sequelize = new Sequelize('heroku_9ec3058ce556a10', 'b85c9c21359917', '7f820141', {
+
+//const sequelize = new Sequelize('database', 'username', 'password', {
+    sequelize = new Sequelize('crytoinfo', 'doadmin', 'vj4gdmbs9si2agwj', {
         dialect: 'mysql',
-        host: 'us-cdbr-iron-east-01.cleardb.net',
+        port : 25060,
+        host: 'db-mysql-nyc1-18623-do-user-6877514-0.a.db.ondigitalocean.com',
+        logging: false,
         define: {
-          timestamps: false
+          timestamps: false,
+          
       }
       });
 
