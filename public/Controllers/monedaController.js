@@ -1,7 +1,7 @@
 
-const transaccionService =require('../Services/transaccionService');
-const monedaService =require('../Services/monedaService');
-const tipoMonedaService = require ('../Services/tipo_monedaService');
+const transaccionService =require('../services/transaccionService');
+const monedaService =require('../services/monedaService');
+const tipoMonedaService = require ('../services/tipo_monedaService');
 
 module.exports = {
     getImporte :   (req,res,next)=>{
