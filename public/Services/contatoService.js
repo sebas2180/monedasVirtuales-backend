@@ -10,8 +10,15 @@ module.exports={
         if(contrato.id_monedero  > -1 )  {
             monedaModel.findOne({ where : { id: contrato.id_monedero }}).then(
                 resp0 =>{
-                   var importeActualizado = parseFloat( resp0['dataValues']['importe']) - parseInt( contrato.eth_pagado) ;
-                    monedaModel.update( { importe : importeActualizado},{ where: {id: contrato.id_monedero }});
+                   var importeActualizado = parseFloat( resp0['dataValues']['importe']) - parseFloat( contrato.eth_pagado) ;
+                   console.log(importeActualizado);
+                    monedaModel.update( { importe : importeActualizado},{ where: {id: contrato.id_monedero }}).then(
+                        respUpdateMonedero => {
+                            console.log('__________________respUpdateMonedero');
+                            console.log(respUpdateMonedero);
+                            console.log('fin__________________respUpdateMonedero');
+                        }
+                    );
                 }
             )
         }
@@ -24,7 +31,7 @@ module.exports={
         newContrato.save().then(
             res=>{
                 if(res['dataValues']) {
-                    console.log(res['dataValues']);
+                    //console.log(res['dataValues']);
                     monedaModel.findOne( { where: {  id_usuario : contrato.id_usuario , monedero:'Kualiandp' } } )
                     .then(
                         resFindKulian => {
@@ -53,14 +60,6 @@ module.exports={
                                     }
                                     
                                 })
-                            //    monedaModel.update( 
-                            //        { importe : importeH } ,
-                            //         { where : { id_usuario : contrato.id_usuario , monedero:'Kualiandp' }}).then(
-                            //             respUpdateKulian => {
-
-                            //             }
-                            //         )
-                            //         .catch(err=>{console.log(err)});
                             }else{
                                 var NKM  = new monedaModel;
                                 NKM.monedero = 'Kualiandp';
@@ -102,14 +101,35 @@ module.exports={
                     return cb(res);
                 }
             )
+    },getEstadisticasContratos:(contrato,cb)=>{
+        var linea ='SELECT SUM(F.eth_pagado) eth_pagado,SUM(F.cantidad) cantidad,SUM(F.contratos) contratos,F.status,SUM(F.eth_recibido) eth_recibido '+
+        'FROM (SELECT id, SUM(C.cantidad) cantidad,IFNULL(SUM(C.eth_pagado),0) eth_pagado ,COUNT(1) '+
+        'contratos,status,0 eth_recibido FROM contrato C WHERE id_usuario  = \''+contrato.id_usuario+'\' group by C.id,C.STATUS '+
+        'UNION SELECT null id,0 cantidad,IFNULL(null,0) eth_pagado,0 contratos,q.status status,SUM(P.eth_pagado) '+
+        'FROM pagos_contratos P INNER JOIN contrato q ON P.id_contrato = q.id WHERE q.id_usuario = \''+contrato.id_usuario+'\''+
+        'GROUP BY q.status)F GROUP BY F.status;'
+        // var linea = 'SELECT SUM(cantidad) cantidad,SUM(eth_pagado) eth_pagado ,COUNT(1) contratos,status FROM contrato '+
+        //             ''+
+        //                 'WHERE id_usuario = \''+contrato.id_usuario+'\' group by status;'
+
+        
+        console.log(linea);
+        connection.query(linea,(err,res,next)=>{
+            res.forEach(element => {
+                console.log(element)
+            });
+        return cb(res);
+        })
     },getContratos:(contrato,cb)=>{
-        contratoModel.findAll({where:{ id_usuario:contrato.id_usuario }}).then(
-            res=>{
-                console.log(res['dataValues']);
-                return cb(res);
-            }
-        )
-}   ,
+        var linea =  'SELECT C.*,SUM(p.eth_pagado) as eth_recibido,M.monedero FROM contrato C LEFT  JOIN pagos_contratos P '+
+        'ON P.id_contrato = C.id INNER JOIN moneda M ON m.id=C.id_monedero WHERE C.id_usuario=\''+contrato.id_usuario+'\' GROUP BY C.id';
+        console.log(linea);
+        connection.query(linea,(err,resp)=> {
+            if(err) {console.log(err);}
+            console.log(resp);
+            return cb(resp);
+        })
+    },
     activarContrato:(contrato,cb)=>{
         var diaActual = new Date;
         contratoModel.update({fecha_inicio: diaActual,pagos_registrados:0,status:'Activo' },
@@ -147,7 +167,7 @@ module.exports={
                         console.log(resFind['dataValues']['importe']+'    '+contrato.eth_recibido);
                         if(resFind['dataValues']){
                             var auxiliar_importe =parseFloat( resFind['dataValues']['importe'])+parseFloat( contrato.eth_recibido );
-                            //console.log(auxiliar_importe);
+                            console.log(auxiliar_importe);
                             monedaModel.update({importe : auxiliar_importe},{
                                 where: {
                                    id : contrato.id_monedero
@@ -159,7 +179,7 @@ module.exports={
                                     if( resp1 == 1 ) {
                                         var pago = new pago_contratoModel();
                                         pago.eth_pagado = parseFloat( contrato.eth_recibido );
-                                        pago.id_contrato = aux_id_moneda;
+                                        pago.id_contrato =contrato.id ;
                                         pago.save().then(
                                             resp2 => {
                                                 if(resp2['dataValues']) {

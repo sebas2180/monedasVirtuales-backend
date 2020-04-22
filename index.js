@@ -63,6 +63,7 @@ const bit2me = require('./cheerio/bit2me')(app,passport);
 const  contratoRoute= require('./public/rutas/contratoRoute')(app,passport);
 const  passportRoute= require('./public/rutas/passportRoute')(app,passport);
 const  monedaRoute= require('./public/rutas/monedaRoute')(app,passport);
+const  transaccionRoute= require('./public/rutas/transaccionRoute')(app,passport);
 const  usuarioRoute= require('./public/rutas/usuarioRoute')(app,passport);
 const  cotizacionesroute= require('./public/rutas/cotizacionesRoutes')(app,passport);
 const  cotizaciones = require('./public/cotizaciones');
