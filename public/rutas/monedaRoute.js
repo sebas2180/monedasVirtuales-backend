@@ -5,6 +5,8 @@ const moneda = require('../Controllers/monedaController');
 function usuarioRoute(app,passport){
     //console.log(pruebaa);
     
+    app.get('/getMoneda',verifyToken.verificar, moneda.getMoneda);
+
     app.get('/getMonedas',verifyToken.verificar, moneda.getMonedas);
 
     app.get('/getImportes',verifyToken.verificar, moneda.getImporte);

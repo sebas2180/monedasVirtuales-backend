@@ -39,6 +39,7 @@ module.exports={
                       )
       .then(
         resMoneda=>{
+          console.log('resMoneda');
          if ( resMoneda) { 
           const sendInfo = {
             status: 770 ,
@@ -53,7 +54,12 @@ module.exports={
           return callback(sendInfo);
          }
           }
-      )}
+      )
+    .catch(
+      err=>{
+        console.log(err);
+      }
+    )}
   ,getNombreMonederos:(datos,callback)=>{
     console.log(datos);
     monedaModel.findAll({ attributes: ['monedero'],where : { id_usuario : datos.id_usuario,nombre:datos.nombre_moneda }},{ group :['monedero'] })
