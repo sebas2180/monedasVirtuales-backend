@@ -121,8 +121,8 @@ module.exports={
         return cb(res);
         })
     },getContratos:(contrato,cb)=>{
-        var linea =  'SELECT C.*,SUM(p.eth_pagado) as eth_recibido,M.monedero FROM contrato C LEFT  JOIN pagos_contratos P '+
-        'ON P.id_contrato = C.id INNER JOIN moneda M ON m.id=C.id_monedero WHERE C.id_usuario=\''+contrato.id_usuario+'\' GROUP BY C.id';
+        var linea =  'SELECT C.*,SUM(P.eth_pagado) as eth_recibido,M.monedero FROM contrato C LEFT  JOIN pagos_contratos P '+
+        'ON P.id_contrato = C.id INNER JOIN moneda M ON M.id=C.id_monedero WHERE C.id_usuario=\''+contrato.id_usuario+'\' GROUP BY C.id';
         console.log(linea);
         connection.query(linea,(err,resp)=> {
             if(err) {console.log(err);}
