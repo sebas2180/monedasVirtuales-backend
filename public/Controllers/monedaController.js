@@ -1,6 +1,7 @@
- 
-const monedaService =require('../services/monedaService.js');
-const tipoMonedaService = require ('../services/tipo_monedaService.js');
+
+const transaccionService =require('../Services/transaccionService');
+const monedaService =require('../Services/monedaService');
+const tipoMonedaService = require ('../Services/tipo_monedaService');
 
 module.exports = {
     getImporte :   (req,res,next)=>{
@@ -88,7 +89,7 @@ module.exports = {
                 cotizacion : 0
             }
             transaccion = {
-                monto : req.body.monto,
+                monto : treq.body.monto,
                 cotizacion_usd : req.body.cotizacion_usd,
                 tipo_moneda : req.body.nombre,
                 tipo_operacion : req.body.tipo_operacion,
@@ -115,8 +116,6 @@ module.exports = {
             id_usuario : req.body.id_usuario
         }
         console.log(transaccion);
-         
-    const transaccionService =require('../../public/services/transaccionService');
        monedaService.updateImporte(req.body,(resp)=>{
         transaccionService.addTransaccion(transaccion,(resp2)=>{
             console.log(resp2);
