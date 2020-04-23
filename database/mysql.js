@@ -23,7 +23,20 @@ var  db_config={
         password: 'vj4gdmbs9si2agwj',
         database: 'crytoinfo',
         insecureAuth : true,
-        dateStrings:true
+        dateStrings:true,
+        pool: {
+          max: 15,
+          min: 5,
+          idle: 20000,
+          evict: 15000,
+          acquire: 30000
+        }
+      //   dialectOptions: {
+      //     socketPath: "/var/run/mysqld/mysqld.sock"
+      // },
+      // define: {
+      //     paranoid: true
+      // }
 }
 module.exports = {
  
