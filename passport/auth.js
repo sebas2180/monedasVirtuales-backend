@@ -4,8 +4,9 @@ var crypto            = require('crypto');
 var LocalStrategy     = require('passport-local').Strategy;
 var Store             = require('express-session').Store;
 const mysql = require('.././database/mysql');
-const User = require('.././database/usuarioModel')();
 const connection = mysql.dbConnection();
+const User = require('.././database/usuarioModel')();
+ 
 const usuarioService =require('../public/Services/usuarioService');
 
  function ps(app,passport) {
@@ -26,13 +27,6 @@ const usuarioService =require('../public/Services/usuarioService');
     } , function (req, usuario, password, done){
        
           if(!usuario || !password ) { return done(null, false, req.flash('message','All fields are required.')); }
-         // var salt = '7fa73b47df808d36c5fe328546ddef8b9011b2c6';
-      
-          // User.findAll().then(
-          //   res1=>{
-          //     console.log(res1);
-          //   }
-          // )
           var linea = "select * from usuario where usuario =\'"+usuario+'\'';
           console.log('linea:    '+linea);
           connection.query(linea,    function(err, rows){ 
