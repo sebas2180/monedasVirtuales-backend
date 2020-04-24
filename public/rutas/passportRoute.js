@@ -7,6 +7,7 @@ var passportController = require('../Controllers/passportController');
         app.post('/signup',passportController.signup);
 
         app.post('/login', function(req, res, next) {
+          console.log('a');
         passport.authenticate('local', function(err, user, info) {
           //console.log(req.body.usuario);
           if (err) { 
@@ -40,7 +41,7 @@ var passportController = require('../Controllers/passportController');
         })(req, res, next);   
     });
 
-        app.get('/logout',isAuthenticated, (req, res, next) => {
+        app.get('/logout', (req, res, next) => {
             res.header('Cache-Control', 'private, no-cache, no-store, must-revalidate');
             console.log('desconexion');
             req.logout();

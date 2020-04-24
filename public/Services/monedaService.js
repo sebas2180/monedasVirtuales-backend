@@ -85,10 +85,10 @@ module.exports={
           return callback(resIdMonedero);
         }
     )}
-  ,getRegistroMoneda:  (symbol,usuario)=>{
+  ,getRegistroMoneda:  (usuario)=>{
     return new Promise((resolve,reject)=>{
-      console.log(usuario);
-      monedaModel.findAll({ where :{symbol: symbol, id_usuario: usuario }})
+     // console.log(usuario);
+      monedaModel.findAll({ where :{ id_usuario: usuario }})
         .then(
             resBTC=>{
               //console.log(resBTC);

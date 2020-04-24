@@ -113,7 +113,7 @@ module.exports={
         //                 'WHERE id_usuario = \''+contrato.id_usuario+'\' group by status;'
 
         
-        console.log(linea);
+        //console.log(linea);
         connection.query(linea,(err,res,next)=>{
             res.forEach(element => {
                 console.log(element)
@@ -126,7 +126,7 @@ module.exports={
         console.log(linea);
         connection.query(linea,(err,resp)=> {
             if(err) {console.log(err);}
-            console.log(resp);
+           // console.log(resp);
             return cb(resp);
         })
     },

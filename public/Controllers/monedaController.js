@@ -23,60 +23,45 @@ module.exports = {
     getMonedas : async (req,res,next)=>{
         var sendMensaje = [];
         var BTC = [] , ETH=[],LTC= [];
-        var symbols = [];
-         monedaService.getSimbolos(req.payload.usuario,(callback)=>{
-            callback.forEach(element => {
-                symbols.push(element['dataValues']['symbol']);
-            });
-            let sinRepetidos = symbols.filter((valor, indiceActual, arreglo) => arreglo.indexOf(valor) === indiceActual);
-            console.log(sinRepetidos);
-            var index =0;
-            console.log(sinRepetidos.length);
-            if(sinRepetidos==0){
-                sendMensaje={   
-                    status: 771,
-                    BTC:BTC,
-                    LTC:LTC,
-                    ETC:ETH
-                };
-            return res.send(sendMensaje);
-            }
-            sinRepetidos.forEach(symb => {
-                ++index;
-               // console.log('forEach:    '+symb);
-                 monedaService.getRegistroMoneda(symb,req.payload.usuario).then(
+        var symbols = [];  
+               console.log('forEach:    '+req.payload.usuario);
+                 monedaService.getRegistroMoneda(req.payload.usuario).then(
                     callback2=>{
-                       // console.log(callback2)                       //console.log(callback2);
-                        if(symb === 'BTC'){
-                            BTC.push(callback2);
+                       // console.log(callback2)   
+                       var index =1;
+                       callback2.forEach(element => {
+                        //console.log(element.symbol)  
+                        if(element.symbol === 'BTC'){
+                            BTC.push(element);
                         }
-                        if(symb === 'ETH'){
-                            ETH.push(callback2);
-                            console.log(BTC);
+                        if(element.symbol === 'ETH'){
+                            ETH.push(element);
+                            //console.log(BTC);
                         }
-                        if(symb === 'LTC'){             
-                            LTC.push(callback2);
-                            console.log(LTC);
-                        } 
-                        if(sinRepetidos[sinRepetidos.length -1 ]===symb){
-                            //console.log(sendMensaje);
-                            sendMensaje={   status: 770,
-                                            BTC:BTC,
-                                            LTC:LTC,
-                                            ETC:ETH
-                                        };
-                            return res.send(sendMensaje);
+                        if(element.symbol === 'LTC'){             
+                            LTC.push(element);
+                           // console.log(element);
                         }
-                     }
-                 )
-
-            })
-           
-        }) 
-            // console.log(sendMensaje);
-            // sendMensaje={BTC:BTC,LTC:LTC,ETC:ETH};
-            // return res.send(sendMensaje);
-        
+                        if(index === callback2.length){
+                           // console.log(BTC);
+                            if(callback2.length>0){
+                                //console.log(sendMensaje);
+                                sendMensaje={   status: 770,
+                                                BTC:BTC,
+                                                LTC:LTC,
+                                                ETC:ETH
+                                            };
+                                return res.send(sendMensaje);
+                            }else{
+    
+                            }
+                        }else{
+                            index++;
+                        }
+                           
+                    });                    
+                }
+            )
     },
     addMoneda :  async (req,res,next)=>{
         tipoMonedaService.getTipoMonedaPorNombre(req.body.nombre,(cb)=>{
