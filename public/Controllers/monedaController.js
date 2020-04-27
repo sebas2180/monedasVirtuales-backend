@@ -74,7 +74,7 @@ module.exports = {
                 cotizacion : 0
             }
             transaccion = {
-                monto : treq.body.monto,
+                monto : req.body.monto,
                 cotizacion_usd : req.body.cotizacion_usd,
                 tipo_moneda : req.body.nombre,
                 tipo_operacion : req.body.tipo_operacion,

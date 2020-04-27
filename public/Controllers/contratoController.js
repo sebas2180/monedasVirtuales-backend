@@ -42,6 +42,14 @@ module.exports = {
         contatoService.getContratos(contrato,(cb)=>{
             res.send(cb);
         })
+    },getCantidadContratos:(req,res,next)=>{
+        var contrato={
+            id_usuario: req.query.id_usuario 
+        }
+        console.log(req.query);
+        contatoService.getCantidadContratos(contrato,(cb)=>{
+            res.send(cb);
+        })
     },
     
     activarContrato:(req,res,next)=>{
@@ -65,7 +73,18 @@ module.exports = {
         contatoService.registrarPago(contrato,(cb)=>{
         res.end(JSON.stringify(cb));
         })
-    }
+    },
+    registrarPagoV2: (req,res,next)=>{
+        var contrato={
+            id_usuario: req.body.id_usuario,
+            tipo_contrato: req.body.tipo_contrato,
+            eth_recibido: req.body.eth_recibido,
+           // id_monedero : req.body.id_monedero
+        }
+        contatoService.registrarPagoV2(contrato,(cb)=>{
+        res.end(JSON.stringify(cb));
+        })
+    },
       
       
 }
