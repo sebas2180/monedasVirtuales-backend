@@ -30,8 +30,8 @@ module.exports = {
                 cotizacion.proveedor='DeCrypto';
                 cotizacion.symbol= 'BTC';
                 cotizacion.base= 'USD';
-                cotizacion.venta= auxiliarUSD['dcb'];
-                cotizacion.compra= auxiliarUSD['dca'];
+                cotizacion.venta= parseFloat(auxiliarUSD['dcb'])-(parseFloat(auxiliarUSD['dcb'])*0.035);
+                cotizacion.compra=  parseFloat(auxiliarUSD['dca'])-(parseFloat(auxiliarUSD['dca'])*0.035);
                 cotizacion.name='Bitcoin';
                 cotizacion.save();
                 var auxiliarARS = body['data'][1];
@@ -39,8 +39,8 @@ module.exports = {
                 cotizacionARS.proveedor='DeCrypto';
                 cotizacionARS.symbol= 'BTC';
                 cotizacionARS.base= 'ARS';
-                cotizacionARS.venta= auxiliarARS['dcb'];
-                cotizacionARS.compra= auxiliarARS['dca'];
+                cotizacionARS.venta= parseFloat(auxiliarARS['dcb'])-(parseFloat(auxiliarARS['dcb'])*0.035);
+                cotizacionARS.compra=  parseFloat(auxiliarARS['dca'])-(parseFloat(auxiliarARS['dca'])*0.035);
                 cotizacionARS.name= 'Bitcoin';
                 cotizacionARS.save();
         });
@@ -56,7 +56,54 @@ module.exports = {
                 cotizacion.name='Ethereum';
                 cotizacion.save();
         
-          });     
+          });    
+          
+          request('https://criptoya.com/exchanges/Sesocio.php?coin=ETH&fiat=ARS&vol=5', { json: true }, (err, res, body) => {
+            if (err) { return console.log(err); }    
+                var cotizacion = new cotizaciones;
+                cotizacion.proveedor='Sesocio';
+                cotizacion.symbol= 'ETH' ;
+                cotizacion.base= 'ARS';
+                cotizacion.venta=  body['bid'];
+                cotizacion.compra= body['ask'];
+                cotizacion.name='Ethereum';
+                 cotizacion.save();
+        
+          }); 
+          request('https://criptoya.com/exchanges/Sesocio.php?coin=BTC&fiat=ARS&vol=0.1', { json: true }, (err, res, body) => {
+            if (err) { return console.log(err); }    
+                var cotizacion = new cotizaciones;
+                cotizacion.proveedor='Sesocio';
+                cotizacion.symbol= 'BTC' ;
+                cotizacion.base= 'ARS';
+                cotizacion.venta=  body['bid'];
+                cotizacion.compra= body['ask'];
+                cotizacion.name='Bitcoin';
+                cotizacion.save();
+        
+          }); 
+          request('https://criptoya.com/exchanges/CryptoMkt.php?coin=ETH&fiat=ARS&vol=5', { json: true }, (err, res, body) => {
+            if (err) { return console.log(err); }    
+                var cotizacion = new cotizaciones;
+                cotizacion.proveedor='Cryptomkt';
+                cotizacion.symbol= 'ETH' ;
+                cotizacion.base= 'ARS';
+                cotizacion.venta=  body['bid'];
+                cotizacion.compra= body['ask'];
+                cotizacion.name='Ethereum';
+                cotizacion.save();
+          }); 
+          request('https://criptoya.com/exchanges/Decrypto.php?coin=BTC&fiat=ARS&vol=0.1', { json: true }, (err, res, body) => {
+            if (err) { return console.log(err); }    
+                var cotizacion = new cotizaciones;
+                cotizacion.proveedor='Cryptomkt';
+                cotizacion.symbol= 'BTC' ;
+                cotizacion.base= 'ARS';
+                cotizacion.venta=  body['bid'];
+                cotizacion.compra= body['ask'];
+                cotizacion.name='Bitcoin';
+                cotizacion.save();
+          });    
         request('http://preev.com/pulse/units:btc+usd/sources:bitstamp+kraken', { json: true }, (err, res, body) => {
         if (err) { return console.log(err); }    
                 var cotizacion = new cotizaciones;
