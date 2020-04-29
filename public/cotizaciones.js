@@ -130,43 +130,47 @@ module.exports = {
         });
 
         request.get({url: 'https://api.satoshitango.com/v3/ticker/ARS', jar: j}, function(err, httpResponse, html) {
-            const aux = JSON.parse(httpResponse['body']);
-            if(!aux['data']['error']){
-                const monedaRipio =( aux['data']['ticker']);
-                if(monedaRipio['BTC'] ){
-                    var cotizacionBTC = new cotizaciones;
-                    cotizacionBTC.proveedor='Satoshitango';
-                    cotizacionBTC.symbol= 'BTC';
-                    cotizacionBTC.base= 'ARS';
-                    cotizacionBTC.compra= monedaRipio['BTC']['ask'];
-                    cotizacionBTC.venta= monedaRipio['BTC']['bid'];
-                    cotizacionBTC.name='Bitcoin';
-                    cotizacionBTC.save();
-    
+            try{
+                const aux = JSON.parse(httpResponse['body']);
+                if(!aux['data']['error']){
+                    const monedaRipio =( aux['data']['ticker']);
+                    if(monedaRipio['BTC'] ){
+                        var cotizacionBTC = new cotizaciones;
+                        cotizacionBTC.proveedor='Satoshitango';
+                        cotizacionBTC.symbol= 'BTC';
+                        cotizacionBTC.base= 'ARS';
+                        cotizacionBTC.compra= monedaRipio['BTC']['ask'];
+                        cotizacionBTC.venta= monedaRipio['BTC']['bid'];
+                        cotizacionBTC.name='Bitcoin';
+                        cotizacionBTC.save();
+        
+                    }
+                    if( monedaRipio['ETH']){
+                        var cotizacionLTC = new cotizaciones;
+                        cotizacionLTC.proveedor='Satoshitango';
+                        cotizacionLTC.symbol= 'LTC';
+                        cotizacionLTC.base= 'ARS';
+                        cotizacionLTC.compra= monedaRipio['LTC']['ask'];
+                        cotizacionLTC.venta= monedaRipio['LTC']['bid'];
+                        cotizacionLTC.name='Litecoin';
+                        cotizacionLTC.save();
+                    }
+        
+                        var cotizacionETH = new cotizaciones;
+                        cotizacionETH.proveedor='Satoshitango';
+                        cotizacionETH.symbol= 'ETH';
+                        cotizacionETH.base= 'ARS';
+                        cotizacionETH.compra= monedaRipio['ETH']['ask'];
+                        cotizacionETH.venta= monedaRipio['ETH']['bid'];
+                        cotizacionETH.name='Ethereum';
+                        cotizacionETH.save();
+        
                 }
-                if( monedaRipio['ETH']){
-                    var cotizacionLTC = new cotizaciones;
-                    cotizacionLTC.proveedor='Satoshitango';
-                    cotizacionLTC.symbol= 'LTC';
-                    cotizacionLTC.base= 'ARS';
-                    cotizacionLTC.compra= monedaRipio['LTC']['ask'];
-                    cotizacionLTC.venta= monedaRipio['LTC']['bid'];
-                    cotizacionLTC.name='Litecoin';
-                    cotizacionLTC.save();
-                }
     
-                    var cotizacionETH = new cotizaciones;
-                    cotizacionETH.proveedor='Satoshitango';
-                    cotizacionETH.symbol= 'ETH';
-                    cotizacionETH.base= 'ARS';
-                    cotizacionETH.compra= monedaRipio['ETH']['ask'];
-                    cotizacionETH.venta= monedaRipio['ETH']['bid'];
-                    cotizacionETH.name='Ethereum';
-                    cotizacionETH.save();
     
+            } catch(err) {
+                console.log('error en satoshitango');
             }
-
-
         });
 
 

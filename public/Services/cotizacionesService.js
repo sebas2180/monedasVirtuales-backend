@@ -2,7 +2,20 @@ const cotizacionesModel = require('../../database/cotizaciones')();
 const mysql = require('../../database/mysql');
 connection = mysql.dbConnection();
 module.exports={
+    getCotizacion :(proveedor,symbol,base,cb) => {
 
+        cotizacionesModel.findOne( { where : { proveedor : proveedor , symbol : symbol , base : base } ,
+             offset: 1, limit:1, order: [['id','DESC']]     } )
+        .then(
+            res => {
+                if ( res ) {
+                    return cb(res) ;
+                } else {
+                    return cb (null) ;
+                }
+            }
+        )
+    },
     getCotizaciones: (cb)=>{
         var linea = 'SELECT COUNT(1) cantidad from (select count(1),proveedor,base from cotizacion group by proveedor, base,symbol) X';
         connection.query(linea,(err,res) => {

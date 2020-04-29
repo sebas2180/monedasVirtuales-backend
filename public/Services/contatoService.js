@@ -1,6 +1,7 @@
 const contratoModel = require('../../database/contrato')();
 const monedaModel = require('../../database/monedaModel')();
 const pago_contratoModel = require('../../database/pago_contrato')();
+const cotizacionServide = require ('./cotizacionesService');
 const mysql = require('../../database/mysql');
 connection = mysql.dbConnection();
 module.exports={
@@ -153,6 +154,45 @@ module.exports={
               return cb(contratos);
           }
       })  
+    },
+    getListaPagos :(contrato,cb)=> {
+        
+        pago_contratoModel.findAll({     where: {  id_contrato      : contrato.id_contrato    }    })
+        .then(
+            res =>{ 
+                if( res ) { 
+                    const linea = `SELECT SUM(eth_pagado) recibido,COUNT(1) N FROM pagos_contratos WHERE id_contrato=?`;
+                    console.log(linea);
+                    connection.query(linea, [contrato.id_contrato],(err1,res1)=>{
+                        if(err1) { 
+                            const resSend = {
+                                status: 780 ,
+                                pagos: null
+                            }
+                            return cb(resSend);
+                        }
+                        cotizacionServide.getCotizacion('Copay','ETH','USD',(cb2)=> {
+                            console.log('cb2')
+                            const resSend = {
+                                status: 780 ,
+                                pagos: res,
+                                N: res1[0].N,
+                                recibido:res1[0].recibido,
+                                promedio_recibido: parseFloat(res1[0].recibido)/parseFloat(res1[0].N),
+                                CopayUSD:  cb2['dataValues']
+                            }
+                            return cb(resSend);
+                        });
+                    });
+                } else{
+                    const resSend = {
+                        status: 780 ,
+                        pagos: null
+                    }
+                    return cb(resSend);
+                }
+            }
+        )
     },
     activarContrato:(contrato,cb)=>{
         var diaActual = new Date;

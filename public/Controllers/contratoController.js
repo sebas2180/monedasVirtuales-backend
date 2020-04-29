@@ -34,6 +34,15 @@ module.exports = {
             res.send(cb);
         })
     },
+    getListaPagos:(req,res,next)=>{
+        var contrato={
+            id_usuario: req.query.id_usuario,
+            id_contrato : req.query.id_contrato
+        }
+        contatoService.getListaPagos(contrato,(cb)=>{
+            res.send(cb);
+        })
+    },
     getContratos:(req,res,next)=>{
         var contrato={
             id_usuario: req.query.id_usuario 
