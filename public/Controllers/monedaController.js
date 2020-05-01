@@ -79,7 +79,7 @@ module.exports = {
                 tipo_moneda : req.body.nombre,
                 tipo_operacion : req.body.tipo_operacion,
                 id_usuario : req.body.id_usuario,
-                id_monedero : monedero
+                id_monedero : req.body.monedero
             }
 
             monedaService.addMoneda(moneda,(resp)=>{
@@ -98,7 +98,7 @@ module.exports = {
             tipo_operacion : req.body.tipo_operacion,
             cotizacion_usd : req.body.cotizacion_usd,
             id_usuario : req.body.id_usuario,
-            id_monedero : monedero
+            id_monedero : req.body.monedero
         }
         console.log(transaccion);
        monedaService.updateImporte(req.body,(resp)=>{
