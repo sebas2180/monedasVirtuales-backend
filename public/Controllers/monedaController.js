@@ -78,7 +78,8 @@ module.exports = {
                 cotizacion_usd : req.body.cotizacion_usd,
                 tipo_moneda : req.body.nombre,
                 tipo_operacion : req.body.tipo_operacion,
-                id_usuario : req.body.id_usuario
+                id_usuario : req.body.id_usuario,
+                id_monedero : monedero
             }
 
             monedaService.addMoneda(moneda,(resp)=>{
@@ -90,15 +91,14 @@ module.exports = {
         });
     },
     updateImporte :   (req,res,next)=>{
-        console.log('___________________________________________')
-        
         transaccion = {
             monto_operacion : req.body.monto_operacion,
             cotizacion_usd : req.body.cotizacion_usd,
             tipo_moneda : req.body.nombre,
             tipo_operacion : req.body.tipo_operacion,
             cotizacion_usd : req.body.cotizacion_usd,
-            id_usuario : req.body.id_usuario
+            id_usuario : req.body.id_usuario,
+            id_monedero : monedero
         }
         console.log(transaccion);
        monedaService.updateImporte(req.body,(resp)=>{
@@ -117,8 +117,33 @@ module.exports = {
            
             return res.send((resp));
         })
-    }
-    ,
+    },//transferenciaSaldo
+    transferenciaSaldo :  (req,res,next)=>{
+        var aux = req.body;
+        const transaccionOrigen = {
+                monto : req.body.monto,
+                tipo_moneda : req.body.nombre_moneda,
+                tipo_operacion : req.body.tipo_operacion,
+                id_usuario : req.body.id_usuario,
+                id_monedero : req.body.id_monedero_origen
+        }
+        const transaccionDestino = {
+            monto : req.body.monto,
+            tipo_moneda : req.body.nombre_moneda,
+            tipo_operacion : req.body.tipo_operacion,
+            id_usuario : req.body.id_usuario,
+            id_monedero : req.body.id_monedero_destino
+        }
+        monedaService.transferenciaSaldo(aux,(resp)=>{
+            transaccionService.addTransaccion(transaccionOrigen,(resp2)=>{
+                console.log(resp2);
+                transaccionService.addTransaccion(transaccionDestino,(resp2)=>{
+                    console.log(resp2);
+                    return res.send((resp));
+                });
+            });
+            })
+    },
     getNombreMonederos :  (req,res,next)=>{
         var aux = req.query;
         const datos = {

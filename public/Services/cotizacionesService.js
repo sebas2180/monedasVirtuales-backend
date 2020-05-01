@@ -3,7 +3,6 @@ const mysql = require('../../database/mysql');
 connection = mysql.dbConnection();
 module.exports={
     getCotizacion :(proveedor,symbol,base,cb) => {
-
         cotizacionesModel.findOne( { where : { proveedor : proveedor , symbol : symbol , base : base } ,
              offset: 1, limit:1, order: [['id','DESC']]     } )
         .then(

@@ -2,9 +2,9 @@ const monedaModel = require('../../database/monedaModel')();
 var Sequelize = require('sequelize');
  
 module.exports={
-  getMonedasService:    (callback)  =>
-            monedaModel.findAll()
-               .then(
+
+  getMonedasService:  (callback)  =>
+            monedaModel.findAll() .then(
                    resp=>{
                     const sendInfo={
                            status: 752,
@@ -33,7 +33,65 @@ module.exports={
       respSimbolos=>{
           return callback(respSimbolos);
         }
-    )}
+    )},
+    transferenciaSaldo:(transferencia,cb)=>{
+      const moneda_origen = {
+        id_usuario : transferencia.id_usuario,
+        nombre_moneda : transferencia.nombre_moneda,
+        id_monedero_origen : transferencia.id_monedero_origen,
+        saldo_origen : transferencia.saldo_origen,
+        saldo_nuevo_origen : transferencia.saldo_nuevo_origen
+      }
+      monedaModel.update({importe: moneda_origen.saldo_nuevo_origen},
+                          { where : { id_usuario : moneda_origen.id_usuario , nombre : moneda_origen.nombre_moneda, 
+                                      importe: moneda_origen.saldo_origen,id : moneda_origen.id_monedero_origen }}
+          )  .then(
+        resMoneda => {
+          
+          if (resMoneda.length == 1 ) {
+          const moneda_destino = {
+            id_usuario : transferencia.id_usuario,
+            nombre_moneda : transferencia.nombre_moneda,
+            id_monedero_destino : transferencia.id_monedero_destino,
+            saldo_destino : transferencia.saldo_destino,
+            saldo_nuevo_destino : transferencia.saldo_nuevo_destino
+          }
+          console.log('moneda_destino')
+          console.log(moneda_destino )
+          monedaModel.update({importe: moneda_destino.saldo_nuevo_destino},
+            { where : {   importe : moneda_destino.saldo_destino, id : moneda_destino.id_monedero_destino }})
+              .then(
+                  resdestino => {
+                    console.log(resdestino)
+                  if (resdestino.length === 1 ) {
+                    const sendResp = {
+                      status: 737,
+                      msj: 'Actualizacion exitosa!.'
+                    }
+                    return cb(sendResp);
+                  } else {
+                    const sendResp = {
+                      status: 736,
+                      msj: 'Hubo un error al actualizar los saldos, por favor reintente en un rato.!'
+                    }
+                    return cb(sendResp);
+                  }
+            }
+          )
+          .catch(
+            errDestino =>  {
+              console.log( errDestino );
+            }
+          )
+          } else {
+            const sendResp = {
+              status: 736,
+              msj: 'Hubo un error al actualizar los saldos, por favor reintente en un rato.'
+            }
+            return cb(sendResp);
+          }
+        })
+      }
   ,getMoneda:(moneda,callback)=>{
       monedaModel.findOne({ where : { id_usuario : moneda.id_usuario , nombre : moneda.nombre_moneda, monedero : moneda.nombre_monedero }}
                       )
@@ -116,34 +174,7 @@ module.exports={
     )
     
   },
-//   getMonedasService2:      (callback)  =>
-//    monedaModel.findAll({ attributes: [ 'symbol']},{ group :['SYMBOL'] })
-//      .then(
-//          resp=>{
-//            getBitcoin(resp,(cb)=>{
-//             console.log(cb);
-//             var sendInfo={
-//               status: 752,
-//               msj:'Monedas encontradas',
-//               ETC: ETH_Monedas,
-//               BTC: BTC_Monedas,
-//               LTC: LTC_Monedas
-//             }
-//             //console.log(sendInfo);
-//               return callback(sendInfo);
-//           })
-//         })
-//      .catch(
-//        err=>{
-//          //console.log(err);
-//         const sendInfo={
-//           status: 763,
-//           msj:'Error en extraer informacion'
-//       } 
-//       return callback(sendInfo);
-         
-//        }
-// ),
+
   addMoneda: function (mon,callback){
       var moneda = new monedaModel();
       moneda.nombre=mon.nombre;
@@ -220,8 +251,8 @@ module.exports={
                       }
                     )
 
-  }
-} 
+  }, 
+},
 
 function getBitcoin (mon,callback){
   var BTC_Monedas =[];

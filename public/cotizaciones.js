@@ -30,8 +30,8 @@ module.exports = {
                 cotizacion.proveedor='DeCrypto';
                 cotizacion.symbol= 'BTC';
                 cotizacion.base= 'USD';
-                cotizacion.venta= parseFloat(auxiliarUSD['dcb'])-(parseFloat(auxiliarUSD['dcb'])*0.035);
-                cotizacion.compra=  parseFloat(auxiliarUSD['dca'])-(parseFloat(auxiliarUSD['dca'])*0.035);
+                cotizacion.venta= parseFloat(auxiliarUSD['dcb'])-(parseFloat(auxiliarUSD['dcb'])*0.0035);
+                cotizacion.compra=  parseFloat(auxiliarUSD['dca'])-(parseFloat(auxiliarUSD['dca'])*0.0035);
                 cotizacion.name='Bitcoin';
                 cotizacion.save();
                 var auxiliarARS = body['data'][1];

@@ -14,11 +14,11 @@ var env = process.argv[2] || 'dev';
 
 
 //const sequelize = new Sequelize('database', 'username', 'password', {
-    sequelize = new Sequelize('crytoinfo', 'doadmin', 'vj4gdmbs9si2agwj', {
+    sequelize = new Sequelize('crytoinfo', 'doadmin', 'dowhoivl3kpdn4pz', {
         dialect: 'mysql',
         port : 25060,
-        host: 'db-mysql-nyc1-18623-do-user-6877514-0.a.db.ondigitalocean.com',
-        logging: false,
+        host: 'sebastianbatalla-do-user-7445190-0.a.db.ondigitalocean.com',
+        //logging: false,
         define: {
           timestamps: false,
           
