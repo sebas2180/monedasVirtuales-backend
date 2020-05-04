@@ -25,6 +25,14 @@ module.exports= () =>{
             type: Sequelize.STRING,
             notEmpty: true
         },
+        variacionDia: {
+            type: Sequelize.FLOAT,
+            notEmpty: true
+        },
+        variacionHora: {
+            type: Sequelize.FLOAT,
+            notEmpty: true
+        },
         compra: {
             type: Sequelize.FLOAT,
             notEmpty: true

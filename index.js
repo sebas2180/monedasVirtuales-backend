@@ -68,7 +68,7 @@ const  usuarioRoute= require('./public/rutas/usuarioRoute')(app,passport);
 const  cotizacionesroute= require('./public/rutas/cotizacionesRoutes')(app,passport);
 const  cotizaciones = require('./public/cotizaciones');
 cotizaciones.cotizaciones();
- require('./database/sequelize');
+ //require('./database/sequelize');
 
  
 

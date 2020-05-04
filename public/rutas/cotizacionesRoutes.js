@@ -7,8 +7,11 @@ function usuarioRoute(app,passport){
     
     app.get('/getCotizaciones',cotizaciones.getCotizaciones);
 
-    app.get('/getCotizacionParaMonedero',cotizaciones.getCotizacionParaMonedero);
+    app.get('/getCotizacionesV2',cotizaciones.getCotizacionesV2);
 
+    app.get('/getCotizacionParaMonedero',cotizaciones.getCotizacionParaMonedero);
+     
+    app.get('/getCotizacionesBTCUSD',cotizaciones.getCotizacionesBTCUSD);
 }
 
 module.exports=usuarioRoute;

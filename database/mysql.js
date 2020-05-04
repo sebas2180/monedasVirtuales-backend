@@ -23,12 +23,13 @@ var  db_config={
         password: 'dowhoivl3kpdn4pz',
         database: 'crytoinfo',
         insecureAuth : true,
-        dateStrings:true,
-        pool: {
-          idle: 20000,
-          evict: 15000,
-          acquire: 30000
-        }
+        dateStrings:true
+        // ,
+        // pool: {
+        //   idle: 20000,
+        //   evict: 15000,
+        //   acquire: 30000
+        // }
       //   dialectOptions: {
       //     socketPath: "/var/run/mysqld/mysqld.sock"
       // },
