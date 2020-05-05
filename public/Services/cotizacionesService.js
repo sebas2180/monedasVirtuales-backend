@@ -15,17 +15,22 @@ module.exports={
             }
         )
     },
-    getCotizacionesV2: (cb)=>{
-        var linea = 'SELECT COUNT(1) cantidad from (select count(1),proveedor,base from cotizacion group by proveedor, base,symbol) X';
-        //console.log(linea ) ;
+    getCotizacionesV2: async (cb)=>{
+        var linea = 'SELECT COUNT(1) cantidad FROM (SELECT count(1),proveedor,base  FROM cotizacion '+
+        'WHERE id<=(SELECT id cantidad from cotizacion order by id DESC  LIMIT 1 ) '+
+        'AND id>=(SELECT SUM(Y.cantidad)-50 FROM(SELECT id cantidad from cotizacion order by id DESC  LIMIT 1 )Y) '+
+        'group by proveedor, base,symbol) X';
+         console.log(linea ) ;
         connection.query(linea,(err,res) => {
             if (err){ console.log(err); }
+            console.log('Esperando get count OK' ) ;;
             var numero = parseFloat(res[0].cantidad);
             cotizacionesModel.findAll(   { offset: numero, limit:numero,
                 order: [['id','DESC']]
             })
         .then(
         resp =>{
+            console.log('Esperando get RESP OK' ) ;
             var repuesta={
                 status:770,
                 cotizaciones : resp
@@ -53,12 +58,15 @@ module.exports={
     });
     },
     getCotizaciones: (cb)=>{
-        var linea = 'SELECT COUNT(1) cantidad from (select count(1),proveedor,base from cotizacion group by proveedor, base,symbol) X';
+        var linea = 'SELECT COUNT(1) cantidad FROM (SELECT count(1),proveedor,base  FROM cotizacion '+
+        'WHERE id<=(SELECT id cantidad from cotizacion order by id DESC  LIMIT 1 ) '+
+        'AND id>=(SELECT SUM(Y.cantidad)-50 FROM(SELECT id cantidad from cotizacion order by id DESC  LIMIT 1 )Y) '+
+        'group by proveedor, base,symbol) X';
         connection.query(linea,(err,res) => {
             if (err){ console.log(err); }
             var numero = parseFloat(res[0].cantidad);
             cotizacionesModel.findAll(   { offset: numero, limit:numero,
-                order: [['id','DESC']]
+                order: [['compra','DESC']]
             })
         .then(
         resp =>{
@@ -71,9 +79,11 @@ module.exports={
     });
     },
 getCotizacionParaMonedero:(callback)=>{
-        const linea =' (select * from cotizacion where proveedor=\'bitstamp\' and base=\'USD\'' +
-                    'limit 1) union (select * from cotizacion where proveedor=\'argenbtc\' limit 1) '+
-                'union (select * from cotizacion where proveedor=\'bit2me\' and base=\'EUR\' limit 1)';
+        const linea =' (SELECT * from cotizacion where proveedor=\'bitstamp\' and base=\'USD\' limit 1)'+
+                    '   UNION (select * from cotizacion where proveedor=\'argenbtc\' limit 1) '+
+                    '   UNION (select * from cotizacion where proveedor=\'Cryptomkt\' and base=\'USD\' limit 1) '+
+                    '   UNION (select * from cotizacion where proveedor=\'bit2me\' and symbol=\'BTC\' and base=\'USD\'  limit 1) '+
+                    '   UNION (select * from cotizacion where proveedor=\'bit2me\' and symbol=\'ETH\' AND base=\'EUR\' limit 1)';
         //console.log(linea);
         connection.query(linea,(err,resp)=>{
             //console.log(resp);

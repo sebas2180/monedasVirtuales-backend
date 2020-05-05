@@ -3,6 +3,7 @@ const cotizacionesService =require('../Services/cotizacionesService');
 
 module.exports = {
     getCotizaciones : (req,res,next)=>{
+        console.log('get cotizaciones V1');
         cotizacionesService.getCotizaciones((callback)=>{
             //console.log(callback['cotizaciones'])
             return res.send(callback);
@@ -19,7 +20,7 @@ module.exports = {
         let BTCARS = [] ;  let BTCEUR = [] ;  let BTCUSD = [] ;
         let LTCARS = [] ;  let LTCEUR = [] ;  let LTCUSD = [] ;
  
-         cotizacionesService.getCotizacionesV2((callback)=>{
+           cotizacionesService.getCotizacionesV2((callback)=>{
             for (let index = 0; index < callback['cotizaciones'].length; index++) {
                 console.log(index)
                 const element = callback['cotizaciones'][index]['dataValues'];

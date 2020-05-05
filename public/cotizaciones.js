@@ -107,7 +107,7 @@ module.exports = {
             if (err) { return console.log(err); }    
                 var cotizacion = new cotizaciones;
                 const aux = body['data'][3]['prices']
-                cotizacion.proveedor='Copay';
+                cotizacion.proveedor='Coinbase';
                 cotizacion.symbol= body['data'][3]['base'];
                 cotizacion.base= body['data'][3]['currency'];
                 cotizacion.venta= aux.latest;
@@ -118,6 +118,22 @@ module.exports = {
                     obtener_valor_hora(body['data'][3]['base'],'Copay',body['data'][3]['currency'],aux.latest,(cbHora)=>{
                         cotizacion.variacionHora = cbHora ;
                         cotizacion.save();  
+                    });  
+                });  
+
+                var cotizacionLTC = new cotizaciones;
+                const aux2 = body['data'][5]['prices']
+                cotizacionLTC.proveedor='Coinbase';
+                cotizacionLTC.symbol= body['data'][5]['base'];
+                cotizacionLTC.base= body['data'][5]['currency'];
+                cotizacionLTC.venta= aux2.latest;
+                cotizacionLTC.compra= aux2.latest;
+                cotizacionLTC.name='Litecoin';
+                obtener_valor(body['data'][5]['base'],'Copay',body['data'][5]['currency'],aux2.latest,(cb)=>{
+                    cotizacionLTC.variacionDia = cb ;
+                    obtener_valor_hora(body['data'][5]['base'],'Copay',body['data'][5]['currency'],aux2.latest,(cbHora)=>{
+                        cotizacionLTC.variacionHora = cbHora ;
+                        cotizacionLTC.save();  
                     });  
                 });  
                
@@ -253,7 +269,7 @@ module.exports = {
                     if (err) { return console.log(err); }    
                         var cotizacion = new cotizaciones;
                         cotizacion.proveedor='Satoshitango';
-                        cotizacion.symbol= 'BTC' ;
+                        cotizacion.symbol= 'ETH' ;
                         cotizacion.base= 'ARS';
                         cotizacion.venta=  body['bid'];
                         cotizacion.compra= body['ask'];
