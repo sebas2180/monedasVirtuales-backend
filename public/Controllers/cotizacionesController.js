@@ -14,8 +14,8 @@ module.exports = {
             return res.send(callback);
         })
     },
-    getCotizacionesV2 : (req,res,next)=>{
-        console.log('get cotizaciones')
+    getCotizacionesV2 :   (req,res,next)=>{
+        console.log('get cotizaciones ...')
         let ETHARS = [] ;  let ETHEUR = [] ;  let ETHUSD = [] ;
         let BTCARS = [] ;  let BTCEUR = [] ;  let BTCUSD = [] ;
         let LTCARS = [] ;  let LTCEUR = [] ;  let LTCUSD = [] ;
@@ -71,8 +71,9 @@ module.exports = {
          });
      },
     getCotizacionParaMonedero : (req,res,next)=>{
-        // console.log('get cotizaciones');
+         console.log('.. gett cotizaciones para monedero');
          cotizacionesService.getCotizacionParaMonedero((callback)=>{
+            console.log('..   cotizaciones para monedero enviado');
              return res.send(callback);
          });
      }

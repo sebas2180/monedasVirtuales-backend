@@ -1,11 +1,13 @@
 const monedaModel = require('../../database/monedaModel')();
 var Sequelize = require('sequelize');
- 
+const mysql = require('../../database/mysql');
+connection = mysql.dbConnection();
 module.exports={
 
   getMonedasService:  (callback)  =>
             monedaModel.findAll() .then(
                    resp=>{
+                     
                     const sendInfo={
                            status: 752,
                            msj:'Monedas encontradas',

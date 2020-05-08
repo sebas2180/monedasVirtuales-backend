@@ -15,7 +15,7 @@ function usuarioRoute(app,passport){
 
     app.post('/updateImporte',verifyToken.verificar,moneda.updateImporte);
 
-    app.post('/transferenciaSaldo', moneda.transferenciaSaldo);
+    app.post('/transferenciaSaldo',verifyToken.verificar, moneda.transferenciaSaldo);
 
     app.post('/updateCotizacion',verifyToken.verificar,moneda.updateCotizacion);
      

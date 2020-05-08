@@ -34,6 +34,18 @@ module.exports= () =>{
             type: Sequelize.INTEGER,
             field: 'id_usuario'
         },
+        compraUSD: {
+            type: Sequelize.FLOAT,
+            notEmpty: true
+        },
+        compraARS: {
+            type: Sequelize.FLOAT,
+            notEmpty: true
+        },
+        compraEUR: {
+            type: Sequelize.FLOAT,
+            notEmpty: true
+        },
         monedero: {
             type: Sequelize.STRING 
         }

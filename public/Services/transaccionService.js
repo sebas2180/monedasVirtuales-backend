@@ -33,7 +33,7 @@ module.exports={
         .catch(
             err=>{console.log(err)}
         )
-    },getEstadisticasPrecio : (id_usuario,cb) => {
+    },getEstadisticasPrecio :   (id_usuario,cb) => {
 
         var linea= 'SELECT F.*,SUM(cotizacion_restante/N_restante)promedio_restante FROM(SELECT k.tipo_moneda,sum(k.compra) compra,sum(k.venta) '+
         'venta,sum(compra-venta)restante,sum(k.cotizacion_compra) cotizacion_compra,sum(k.N_compra) N_compra,'+
@@ -46,8 +46,8 @@ module.exports={
         'IFNULL(sum(monto),0) venta,0 cotizacion_compra,0 N_compra,IFNULL(sum(cotizacion_usd),0) cotizacion_venta,IFNULL(count(1),0) N_venta,'+
         'tipo_moneda  FROM transaccion WHERE UPPER(tipo_operacion)=UPPER(\'venta\') AND UPPER(id_usuario)=UPPER(\''+id_usuario+'\') GROUP BY tipo_moneda)k '+
         'group by k.tipo_moneda)F GROUP BY F.tipo_moneda';
-        //console.log(linea);
-        connection.query(linea,(err,resp)=>{
+         console.log('linea compra');
+          connection.query(linea,(err,resp)=>{
             return cb(resp);
         });
         

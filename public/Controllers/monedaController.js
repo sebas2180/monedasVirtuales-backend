@@ -2,7 +2,8 @@
 const transaccionService =require('../Services/transaccionService');
 const monedaService =require('../Services/monedaService');
 const tipoMonedaService = require ('../Services/tipo_monedaService');
-
+const mysql = require('../../database/mysql');
+connection = mysql.dbConnection();
 module.exports = {
     getImporte :   (req,res,next)=>{
         monedaService.getImportes(req.payload.usuario,(callback)=>{
@@ -20,19 +21,23 @@ module.exports = {
             res.send(cb);
         })
     },
-    getMonedas : async (req,res,next)=>{
+    getMonedas :(req,res,next)=>{
         var sendMensaje = [];
         var BTC = [] , ETH=[],LTC= [];
         var symbols = [];  
-               console.log('forEach:    '+req.payload.usuario);
+               console.log( ' get monedas ...');
                  monedaService.getRegistroMoneda(req.payload.usuario).then(
                     callback2=>{
                        // console.log(callback2)   
                        var index =1;
                        callback2.forEach(element => {
-                        //console.log(element.symbol)  
                         if(element.symbol === 'BTC'){
+                            // var linea = `SELECT * FROM cotizacion WHERE proveedor='Bitstamp' AND base='USD' AND symbol='BTC' order by id DESC LIMIT 1`
+                            //  connection.query(linea, function await (err,res0)   {       
+                            //     element.compraUSD = parseFloat(res0[0].compra * element.importe) ;
+                            // }) ;
                             BTC.push(element);
+                            
                         }
                         if(element.symbol === 'ETH'){
                             ETH.push(element);
@@ -51,6 +56,7 @@ module.exports = {
                                                 LTC:LTC,
                                                 ETC:ETH
                                             };
+                                            console.log(' monedas enviadas .....');
                                 return res.send(sendMensaje);
                             }else{
     
@@ -63,7 +69,7 @@ module.exports = {
                 }
             )
     },
-    addMoneda :  async (req,res,next)=>{
+    addMoneda :   (req,res,next)=>{
         tipoMonedaService.getTipoMonedaPorNombre(req.body.nombre,(cb)=>{
             moneda = {
                 nombre: req.body.nombre,
@@ -164,7 +170,7 @@ module.exports = {
             return res.send((resp));
         })
     },
-    getIdMonederos :(req,res,next)=>{
+    getIdMonederos :  (req,res,next)=>{
         console.log(req.query);
         monedaService.getIdMonederos(req.query.monedero,req.query.id_usuario,(resp)=>{
             

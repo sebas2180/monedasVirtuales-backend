@@ -15,17 +15,17 @@ module.exports={
             }
         )
     },
-    getCotizacionesV2: async (cb)=>{
+    getCotizacionesV2:    (cb)=>{
         var linea = 'SELECT COUNT(1) cantidad FROM (SELECT count(1),proveedor,base  FROM cotizacion '+
         'WHERE id<=(SELECT id cantidad from cotizacion order by id DESC  LIMIT 1 ) '+
         'AND id>=(SELECT SUM(Y.cantidad)-50 FROM(SELECT id cantidad from cotizacion order by id DESC  LIMIT 1 )Y) '+
         'group by proveedor, base,symbol) X';
-         console.log(linea ) ;
+         console.log('select linea contizaciones ..' ) ;
         connection.query(linea,(err,res) => {
             if (err){ console.log(err); }
             console.log('Esperando get count OK' ) ;;
             var numero = parseFloat(res[0].cantidad);
-            cotizacionesModel.findAll(   { offset: numero, limit:numero,
+              cotizacionesModel.findAll(   { offset: numero, limit:numero,
                 order: [['id','DESC']]
             })
         .then(
@@ -79,19 +79,24 @@ module.exports={
     });
     },
 getCotizacionParaMonedero:(callback)=>{
-        const linea =' (SELECT * from cotizacion where proveedor=\'bitstamp\' and base=\'USD\' limit 1)'+
-                    '   UNION (select * from cotizacion where proveedor=\'argenbtc\' limit 1) '+
-                    '   UNION (select * from cotizacion where proveedor=\'Cryptomkt\' and base=\'USD\' limit 1) '+
-                    '   UNION (select * from cotizacion where proveedor=\'bit2me\' and symbol=\'BTC\' and base=\'USD\'  limit 1) '+
-                    '   UNION (select * from cotizacion where proveedor=\'bit2me\' and symbol=\'ETH\' AND base=\'EUR\' limit 1)';
-        //console.log(linea);
+        const linea =' (       SELECT * from cotizacion where proveedor=\'bitstamp\' and base=\'USD\'  ORDER BY id DESC  limit 1)'+
+                    '   UNION (SELECT * from cotizacion where proveedor=\'ArgenBtc\' ORDER BY id DESC  limit 1) '+
+                    '   UNION (SELECT * from cotizacion where proveedor=\'Cryptomkt\' and base=\'USD\' ORDER BY id DESC  limit 1) '+
+                    '   UNION (SELECT * from cotizacion where proveedor=\'bit2me\' and symbol=\'BTC\' and base=\'EUR\' ORDER BY id DESC   limit 1) '+
+                    '   UNION (SELECT * from cotizacion where proveedor=\'bit2me\' and symbol=\'ETH\' AND base=\'EUR\' ORDER BY id DESC limit 1)'+
+                    '   UNION (SELECT * from cotizacion where proveedor=\'Coinbase\' and symbol=\'ETH\' and base=\'USD\' ORDER BY id DESC   limit 1) ';
+         console.log(' .. linea cotizaciones para monedero' );
         connection.query(linea,(err,resp)=>{
             //console.log(resp);
         const sendResp = {
             status: 770,
-            bitstamp:resp[0],
-            bit2me:resp[2],
-            argenBTC: resp[1]
+            bitstampBTCUSD:resp[0],
+            argenBTCARS: resp[1],
+            CryptomktBTCUSD:resp[2],
+            bit2meBTCEUR:resp[3],
+            bit2meETHEUR:resp[4],
+            coinbaseETHUSD:resp[5]
+             
         };
         return callback(sendResp);
     })

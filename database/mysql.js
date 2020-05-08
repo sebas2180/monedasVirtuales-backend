@@ -23,7 +23,8 @@ var  db_config={
         password: 'dowhoivl3kpdn4pz',
         database: 'crytoinfo',
         insecureAuth : true,
-        dateStrings:true
+        dateStrings:true,
+        multipleStatements: true
         // ,
         // pool: {
         //   idle: 20000,

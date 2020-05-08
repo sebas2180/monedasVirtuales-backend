@@ -5,7 +5,7 @@ function contratoRoute(app,passport){
     
     app.post('/crearContrato',verifyToken.verificar,contrato.crearContrato);
 
-    app.get('/getContrato',verifyToken.verificar,contrato.getContrato);
+    app.get('/getContrato',verifyToken.verificar,  contrato.getContrato);
 
     app.get('/getContratos',verifyToken.verificar,contrato.getContratos);
 

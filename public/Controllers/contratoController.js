@@ -25,12 +25,14 @@ module.exports = {
             res.send(cb);
         })
     },
-    getEstadisticasContratos:(req,res,next)=>{
+    getEstadisticasContratos:   (req,res,next)=>{
+        console.log('get estadisticas contratos ...')
         var contrato={
             id_usuario: req.query.id_usuario 
         }
         console.log(req.query);
         contatoService.getEstadisticasContratos(contrato,(cb)=>{
+            console.log('  estadisticas enviaddo   ...')
             res.send(cb);
         })
     },
@@ -43,20 +45,21 @@ module.exports = {
             res.send(cb);
         })
     },
-    getContratos:(req,res,next)=>{
+    getContratos:  (req,res,next)=>{
         var contrato={
             id_usuario: req.query.id_usuario 
         }
-        console.log(req.query);
         contatoService.getContratos(contrato,(cb)=>{
+            console.log('   contratos enviados... ')
             res.send(cb);
         })
-    },getCantidadContratos:(req,res,next)=>{
+    },getCantidadContratos:  (req,res,next)=>{
         var contrato={
             id_usuario: req.query.id_usuario 
         }
         console.log(req.query);
-        contatoService.getCantidadContratos(contrato,(cb)=>{
+          contatoService.getCantidadContratos(contrato,(cb)=>{
+            console.log(' cantidad contratos enviado...');
             res.send(cb);
         })
     },
@@ -71,7 +74,7 @@ module.exports = {
             res.send(cb);
         })
     },
-    registrarPago:(req,res,next)=>{
+    registrarPago: (req,res,next)=>{
         var contrato={
             id_usuario: req.body.id_usuario,
             id: req.body.id,
@@ -83,7 +86,8 @@ module.exports = {
         res.end(JSON.stringify(cb));
         })
     },
-    registrarPagoV2: (req,res,next)=>{
+    registrarPagoV2:  (req,res,next)=>{
+        console.log( '.. registrat pago')
         var contrato={
             id_usuario: req.body.id_usuario,
             tipo_contrato: req.body.tipo_contrato,

@@ -2,17 +2,17 @@ var request = require('request');
 var cron = require('node-cron');
 var j = request.jar();
 var cotizaciones = require('../database/cotizaciones')();
+var monedaModel = require('../database/monedaModel')();
 const mysql = require('.././database/mysql');
 connection = mysql.dbConnection();
 
 module.exports = {
 
-   cotizaciones: async ()=>{
+   cotizaciones:  ()=>{
     cron.schedule('*/10 * * * * *', () => {
         //console.log('running a task every minute');
         request('https://api.bit2me.com/v1/ticker2', { json: true }, (err, res, body) => {
-        if (err) { return console.log(err); }
-
+        if (err) { return console.log(err); }       
                     var cotizacion = new cotizaciones;
                     cotizacion.proveedor='Bit2me';
                     cotizacion.symbol= body['data'][0]['symbol'];
@@ -27,6 +27,8 @@ module.exports = {
                                     body['data'][0]['buy'],(cbHora)=>{
                             cotizacion.variacionHora = cbHora ;
                             cotizacion.save();  
+                            connection.query(`UPDATE moneda SET compraEUR=${parseFloat(body['data'][0]['buy']) } WHERE symbol='BTC'`,(e,r)=>{
+                            });
                         });   
                     });     
                                  
@@ -44,6 +46,8 @@ module.exports = {
                                     body['data'][1]['buy'],(cbHora)=>{
                                     cotizacion1.variacionHora = cbHora ;
                                     cotizacion1.save();  
+                                    connection.query(`UPDATE moneda SET compraEUR=${parseFloat(body['data'][1]['buy']) } WHERE symbol='ETH'`,(e,r)=>{
+                                    });
                         });   
                     });      
 
@@ -66,7 +70,8 @@ module.exports = {
 
         });
         request('https://api.decrypto.com.ar:8081/1.0/frontend/precios/', { json: true }, (err, res, body) => {
-        if (err) { return console.log(err); }    
+            try{
+                if (err) { return console.log(err); }    
                 //console.log(body);
                 var auxiliarUSD = body['data'][0];
                 var cotizacion = new cotizaciones;
@@ -84,6 +89,25 @@ module.exports = {
                             cotizacion.save();  
                         });    
                 });  
+            }catch(err) {
+                obtener_ultimo_registro('DeCrypto','USD','BTC',(ca)=> {
+                    console.log(ca['proveedor'] );
+                var cotizacion = new cotizaciones;
+                cotizacion.proveedor=ca['proveedor'];
+                cotizacion.symbol= 'BTC';
+                cotizacion.base= 'USD';
+                cotizacion.compra=  ca['compra'];
+                cotizacion.venta=  ca['venta'];
+                cotizacion.name='Bitcoin';
+                obtener_valor('BTC','DeCrypto','USD',ca['compra'],(cb)=>{
+                        cotizacion.variacionDia = cb ;
+                        obtener_valor_hora('BTC','DeCrypto','USD',ca['compra'],(cbHora)=>{
+                            cotizacion.variacionHora = cbHora ;
+                            cotizacion.save();  
+                        });    
+                });  
+                });
+            }
                 
                 var auxiliarARS = body['data'][1];
                 var cotizacionARS = new cotizaciones;
@@ -113,11 +137,13 @@ module.exports = {
                 cotizacion.venta= aux.latest;
                 cotizacion.compra= aux.latest;
                 cotizacion.name='Ethereum';
-                obtener_valor(body['data'][3]['base'],'Copay',body['data'][3]['currency'],aux.latest,(cb)=>{
+                obtener_valor(body['data'][3]['base'],'Coinbase',body['data'][3]['currency'],aux.latest,(cb)=>{
                     cotizacion.variacionDia = cb ;
-                    obtener_valor_hora(body['data'][3]['base'],'Copay',body['data'][3]['currency'],aux.latest,(cbHora)=>{
+                    obtener_valor_hora(body['data'][3]['base'],'Coinbase',body['data'][3]['currency'],aux.latest,(cbHora)=>{
                         cotizacion.variacionHora = cbHora ;
                         cotizacion.save();  
+                        connection.query(`UPDATE moneda SET compraUSD=${parseFloat(cotizacion.compra) } WHERE symbol='ETH'`,(e,r)=>{     
+                        });
                     });  
                 });  
 
@@ -130,9 +156,13 @@ module.exports = {
                 cotizacionLTC.compra= aux2.latest;
                 cotizacionLTC.name='Litecoin';
                 obtener_valor(body['data'][5]['base'],'Copay',body['data'][5]['currency'],aux2.latest,(cb)=>{
-                    cotizacionLTC.variacionDia = cb ;
+                    if(cb !=null) {
+                        cotizacionLTC.variacionDia = cb ;
+                    }
                     obtener_valor_hora(body['data'][5]['base'],'Copay',body['data'][5]['currency'],aux2.latest,(cbHora)=>{
-                        cotizacionLTC.variacionHora = cbHora ;
+                        if(cbHora !=null) {
+                            cotizacionLTC.variacionHora = cbHora ;
+                        }
                         cotizacionLTC.save();  
                     });  
                 });  
@@ -186,10 +216,18 @@ module.exports = {
                 cotizacion.compra= body['ask'];
                 cotizacion.name='Ethereum';
                 obtener_valor('ETH','Cryptomkt','ARS', body['ask'],(cb)=>{
-                    cotizacion.variacionDia = cb ;
+                    if(cb !=null) {
+                        cotizacion.variacionDia = cb ;
+                    }
+                   
                     obtener_valor_hora('ETH','Cryptomkt','ARS', body['ask'],(cbHora)=>{
-                        cotizacion.variacionHora = cbHora ;
+                         
+                        if(cbHora !=null) {
+                            cotizacion.variacionHora = cbHora ;
+                        }
                         cotizacion.save();  
+                        connection.query(`UPDATE moneda SET compraARS=${parseFloat(cotizacion.compra) } WHERE symbol='ETH'`,(e,r)=>{
+                        });
                     }); 
                 });  
                 
@@ -226,6 +264,8 @@ module.exports = {
                     obtener_valor_hora('BTC','Bitstamp','USD', body['btc']['usd']['bitstamp']['last'],(cbHora)=>{
                         cotizacion.variacionHora = cbHora ;
                         cotizacion.save();  
+                        connection.query(`UPDATE moneda SET compraUSD=${parseFloat(cotizacion.compra) } WHERE symbol='BTC'`,(e,r)=>{     
+                            });
                     });   
                 });  
     
@@ -244,6 +284,8 @@ module.exports = {
                     obtener_valor_hora('BTC','ArgenBtc','ARS', body['precio_compra'],(cbHora)=>{
                         cotizacion.variacionHora = cbHora ;
                         cotizacion.save();  
+                        connection.query(`UPDATE moneda SET compraARS=${parseFloat(cotizacion.compra) } WHERE symbol='BTC'`,(e,r)=>{             
+                        });
                     });  
                 });  
     
@@ -359,11 +401,16 @@ function obtener_valor(symbol,proveedor,base,compra_hoy,cb) {
                     if( error) { 
                         console.log( error );
                     }
-                    var A = (parseFloat((100/respuesta[0].compra_ayer)) ) ;
-                    var B = (parseFloat((compra_hoy-respuesta[0].compra_ayer)) ) ;
-                    var C = (A*B);
-                    //var varDia  = ( parseFloat((100/respuesta[0].compra_ayer)*(compra_hoy-respuesta[0].compra_ayer)) );
-                    return cb(C);
+                    if(respuesta.length >0){
+                        var A = (parseFloat((100/respuesta[0].compra_ayer)) ) ;
+                        var B = (parseFloat((compra_hoy-respuesta[0].compra_ayer)) ) ;
+                        var C = (A*B);
+                        //var varDia  = ( parseFloat((100/respuesta[0].compra_ayer)*(compra_hoy-respuesta[0].compra_ayer)) );
+                        return cb(C);
+                    } else {
+                        return cb(null);
+                    }
+ 
                 })
             }catch(err) {
                 return cb(null);
@@ -386,4 +433,11 @@ function obtener_valor_hora(symbol,proveedor,base,compra_hoy,cb) {
             return cb(0);
         }
     });
+}
+function obtener_ultimo_registro(proveedor,base,symbol,ca) {
+    var linea = `SELECT * FROM cotizacion WHERE proveedor='${proveedor}' AND base='${base}' AND symbol='${symbol}' order by id DESC LIMIT 1`;
+    connection.query(linea,(err,res) => {
+
+        return ca(res[0]);
+    })
 }
