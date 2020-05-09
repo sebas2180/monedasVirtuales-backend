@@ -11,7 +11,7 @@ module.exports = {
             return res.send(callback);
         });
     },
-    getMoneda:(req,res,next)=>{
+    getMoneda: async (req,res,next)=>{
         var moneda={
             id_usuario: req.query.id_usuario,
             nombre_monedero : req.query.nombre_monedero,
@@ -21,7 +21,7 @@ module.exports = {
             res.send(cb);
         })
     },
-    getMonedas :(req,res,next)=>{
+    getMonedas : async (req,res,next)=>{
         var sendMensaje = [];
         var BTC = [] , ETH=[],LTC= [];
         var symbols = [];  

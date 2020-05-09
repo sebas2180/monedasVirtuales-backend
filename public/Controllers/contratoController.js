@@ -25,16 +25,25 @@ module.exports = {
             res.send(cb);
         })
     },
-    getEstadisticasContratos:   (req,res,next)=>{
+    getEstadisticasContratos:    (req,res,next)=>{
         console.log('get estadisticas contratos ...')
         var contrato={
             id_usuario: req.query.id_usuario 
         }
         console.log(req.query);
-        contatoService.getEstadisticasContratos(contrato,(cb)=>{
-            console.log('  estadisticas enviaddo   ...')
-            res.send(cb);
-        })
+        // contatoService.getEstadisticasContratos(contrato,(cb)=>{
+        //     console.log('  estadisticas enviaddo   ...')
+        //     res.send(cb);
+        // })
+    setTimeout(async function(){
+        await contatoService.getEstadisticasContratosV2(contrato).then(
+            cb =>{
+                console.log(cb);
+                console.log('  estadisticas enviaddo   ...');
+                res.send(cb);
+            }
+        )
+    },0);
     },
     getListaPagos:(req,res,next)=>{
         var contrato={
@@ -45,26 +54,43 @@ module.exports = {
             res.send(cb);
         })
     },
-    getContratos:  (req,res,next)=>{
+    getContratos: async (req,res,next)=>{
         var contrato={
             id_usuario: req.query.id_usuario 
         }
-        contatoService.getContratos(contrato,(cb)=>{
-            console.log('   contratos enviados... ')
-            res.send(cb);
-        })
-    },getCantidadContratos:  (req,res,next)=>{
+        setTimeout(async()=>{
+            await contatoService.getContratosV2(contrato).then(
+                cb => {
+                    console.log('   contratos enviados... ')
+                    res.send(cb);
+                }
+            );
+        },0);
+        // contatoService.getContratos(contrato,(cb)=>{
+        //     console.log('   contratos enviados... ')
+        //     res.send(cb);
+        // })
+    },
+    getCantidadContratos:  async (req,res,next)=>{
         var contrato={
             id_usuario: req.query.id_usuario 
         }
         console.log(req.query);
-          contatoService.getCantidadContratos(contrato,(cb)=>{
-            console.log(' cantidad contratos enviado...');
-            res.send(cb);
-        })
+        //   contatoService.getCantidadContratos(contrato,(cb)=>{
+        //     console.log(' cantidad contratos enviado...');
+        //     res.send(cb);
+        // })
+          setTimeout(async ()=>{
+             contatoService.getCantidadContratosV2(contrato).then(
+                cb => {
+                    console.log(' cantidad contratos enviado...');
+                    res.send(cb);
+                }
+                );
+          },0);
     },
     
-    activarContrato:(req,res,next)=>{
+    activarContrato:async(req,res,next)=>{
         var contrato={
             id_usuario: req.query.id_usuario,
             id: req.query.id
@@ -74,7 +100,7 @@ module.exports = {
             res.send(cb);
         })
     },
-    registrarPago: (req,res,next)=>{
+    registrarPago:async (req,res,next)=>{
         var contrato={
             id_usuario: req.body.id_usuario,
             id: req.body.id,
@@ -86,7 +112,7 @@ module.exports = {
         res.end(JSON.stringify(cb));
         })
     },
-    registrarPagoV2:  (req,res,next)=>{
+    registrarPagoV2: async (req,res,next)=>{
         console.log( '.. registrat pago')
         var contrato={
             id_usuario: req.body.id_usuario,
@@ -94,9 +120,18 @@ module.exports = {
             eth_recibido: req.body.eth_recibido,
            // id_monedero : req.body.id_monedero
         }
-        contatoService.registrarPagoV2(contrato,(cb)=>{
-        res.end(JSON.stringify(cb));
-        })
+        setTimeout(async function() { 
+            await contatoService.registrarPagoV3(contrato).then(
+                cb => {
+                    console.log(' .... pago guardado.')
+                    res.end(JSON.stringify(cb));
+                }
+            )
+        }, 0);
+
+        // contatoService.registrarPagoV2(contrato,(cb)=>{
+        // res.end(JSON.stringify(cb));
+        // })
     },
       
       

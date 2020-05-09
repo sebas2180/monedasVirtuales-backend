@@ -15,13 +15,13 @@ module.exports={
             }
         )
     },
-    getCotizacionesV2:    (cb)=>{
+    getCotizacionesV2:  async  (cb)=>{
         var linea = 'SELECT COUNT(1) cantidad FROM (SELECT count(1),proveedor,base  FROM cotizacion '+
         'WHERE id<=(SELECT id cantidad from cotizacion order by id DESC  LIMIT 1 ) '+
         'AND id>=(SELECT SUM(Y.cantidad)-50 FROM(SELECT id cantidad from cotizacion order by id DESC  LIMIT 1 )Y) '+
         'group by proveedor, base,symbol) X';
          console.log('select linea contizaciones ..' ) ;
-        connection.query(linea,(err,res) => {
+           connection.query(linea,(err,res) => {
             if (err){ console.log(err); }
             console.log('Esperando get count OK' ) ;;
             var numero = parseFloat(res[0].cantidad);
@@ -38,6 +38,32 @@ module.exports={
         return cb(repuesta);
         })
     });
+    },
+    getCotizacionesV3:    async  ()=>{
+        return new Promise((resolve,reject)=> {
+            var linea = 'SELECT COUNT(1) cantidad FROM (SELECT count(1),proveedor,base  FROM cotizacion '+
+            'WHERE id<=(SELECT id cantidad from cotizacion order by id DESC  LIMIT 1 ) '+
+            'AND id>=(SELECT SUM(Y.cantidad)-50 FROM(SELECT id cantidad from cotizacion order by id DESC  LIMIT 1 )Y) '+
+            'group by proveedor, base,symbol) X';
+             console.log('select linea contizacionesV3 ..' ) ;
+                connection.query(linea,(err,res) => {
+                if (err){ console.log(err); }
+                console.log('Esperando get count OK' ) ;;
+                var numero = parseFloat(res[0].cantidad);
+                  cotizacionesModel.findAll(   { offset: numero, limit:numero,
+                    order: [['id','DESC']]
+                })
+            .then(
+            resp =>{
+                console.log('Esperando get RESP OK' ) ;
+                var repuesta={
+                    status:770,
+                    cotizaciones : resp
+                };
+            resolve(repuesta);
+            })
+        });
+        });
     },
     getCotizacionesBTCUSD: (cb)=>{
         var linea = 'SELECT COUNT(1) cantidad from (select count(1),proveedor,base'+
