@@ -109,6 +109,7 @@ module.exports = {
                 });
             }
                 
+            try{
                 var auxiliarARS = body['data'][1];
                 var cotizacionARS = new cotizaciones;
                 cotizacionARS.proveedor='DeCrypto';
@@ -125,6 +126,25 @@ module.exports = {
                         cotizacion.save();  
                     }); 
                 });  
+            }catch(err) {
+                obtener_ultimo_registro('DeCrypto','USD','BTC',(ca)=> {
+                    console.log(ca['proveedor'] );
+                var cotizacion = new cotizaciones;
+                cotizacion.proveedor='DeCrypto';
+                cotizacion.symbol= 'BTC';
+                cotizacion.base= 'USD';
+                cotizacion.compra=  ca['compra'];
+                cotizacion.venta=  ca['venta'];
+                cotizacion.name='Bitcoin';
+                obtener_valor('BTC','DeCrypto','USD',ca['compra'],(cb)=>{
+                        cotizacion.variacionDia = cb ;
+                        obtener_valor_hora('BTC','DeCrypto','USD',ca['compra'],(cbHora)=>{
+                            cotizacion.variacionHora = cbHora ;
+                            cotizacion.save();  
+                        });    
+                });  
+                });
+            }
                  
         });
         request('https://www.coinbase.com/api/v2/assets/prices?base=USD&filter=listed&resolution=latest', { json: true }, (err, res, body) => {
@@ -135,7 +155,7 @@ module.exports = {
                 cotizacion.symbol= body['data'][3]['base'];
                 cotizacion.base= body['data'][3]['currency'];
                 cotizacion.venta= aux.latest;
-                cotizacion.compra= aux.latest;
+                cotizacion.compra= aux.latest; 
                 cotizacion.name='Ethereum';
                 obtener_valor(body['data'][3]['base'],'Coinbase',body['data'][3]['currency'],aux.latest,(cb)=>{
                     cotizacion.variacionDia = cb ;
@@ -424,13 +444,17 @@ function obtener_valor_hora(symbol,proveedor,base,compra_hoy,cb) {
             ` FROM cotizacion WHERE CREATE_AT BETWEEN  DATE_SUB(NOW(),INTERVAL 1 hour)   AND  NOW() AND `+
             `PROVEEDOR='${proveedor}' AND symbol='${symbol}' AND base='${base}' LIMIT  1` ;
     connection.query(linea,(error,respuesta) => {
-        if(respuesta.length === 1) {
-            var A = (parseFloat((100/respuesta[0].compra_ayer)) ) ;
-            var B = (parseFloat((compra_hoy-respuesta[0].compra_ayer)) ) ;
-            var C = (A*B);
-            return cb(C);
-        } else{
-            return cb(0);
+        try{
+            if(respuesta.length === 1) {
+                var A = (parseFloat((100/respuesta[0].compra_ayer)) ) ;
+                var B = (parseFloat((compra_hoy-respuesta[0].compra_ayer)) ) ;
+                var C = (A*B);
+                return cb(C);
+            } else{
+                return cb(0);
+            }
+        }catch(err ) {
+            return cb(null);
         }
     });
 }

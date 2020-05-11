@@ -25,7 +25,7 @@ module.exports= () =>{
             type: Sequelize.STRING,
             notEmpty: true
         },
-        createAt: {
+        createdAt: {
             type: Sequelize.DATE,
             field: 'create_at',
             notEmpty: false

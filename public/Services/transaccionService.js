@@ -35,7 +35,7 @@ module.exports={
             err=>{console.log(err)}
         )
     },
-    getEstadisticasPrecioV2 :   (id_usuario) => {
+    getEstadisticasPrecioV2 : async  (id_usuario) => {
         return new Promise((resolve,reject)=> {
             
         var linea= 'SELECT F.*,SUM(cotizacion_restante/N_restante)promedio_restante FROM(SELECT k.tipo_moneda,sum(k.compra) compra,sum(k.venta) '+
@@ -50,7 +50,8 @@ module.exports={
         'tipo_moneda  FROM transaccion WHERE UPPER(tipo_operacion)=UPPER(\'venta\') AND UPPER(id_usuario)=UPPER(\''+id_usuario+'\') GROUP BY tipo_moneda)k '+
         'group by k.tipo_moneda)F GROUP BY F.tipo_moneda';
          console.log('linea compra');
-          connection.query(linea,(err,resp)=>{
+          connection.query(linea,async(err,resp)=>{
+            if(err) {console.log(err);}
              resolve(resp);
         });
         })

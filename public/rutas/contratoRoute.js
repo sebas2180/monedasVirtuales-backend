@@ -7,7 +7,7 @@ function contratoRoute(app,passport){
 
     app.get('/getContrato',verifyToken.verificar,  contrato.getContrato);
 
-    app.get('/getContratos',verifyToken.verificar,contrato.getContratos);
+    app.get('/getContratos',contrato.getContratos);
 
     app.get('/activarContrato',verifyToken.verificar,contrato.activarContrato);
  
@@ -15,7 +15,7 @@ function contratoRoute(app,passport){
 
     app.post('/registrarPago',verifyToken.verificar,contrato.registrarPagoV2);
 
-    app.get('/getCantidadContratos',verifyToken.verificar,contrato.getCantidadContratos);
+    app.get('/getCantidadContratos', contrato.getCantidadContratos);
 
     
     app.get('/getListaPagos',contrato.getListaPagos);

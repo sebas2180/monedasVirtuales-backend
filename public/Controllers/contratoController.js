@@ -25,7 +25,7 @@ module.exports = {
             res.send(cb);
         })
     },
-    getEstadisticasContratos:    (req,res,next)=>{
+    getEstadisticasContratos: async    (req,res,next)=>{
         console.log('get estadisticas contratos ...')
         var contrato={
             id_usuario: req.query.id_usuario 
@@ -35,8 +35,8 @@ module.exports = {
         //     console.log('  estadisticas enviaddo   ...')
         //     res.send(cb);
         // })
-    setTimeout(async function(){
-        await contatoService.getEstadisticasContratosV2(contrato).then(
+    setTimeout( function(){
+         contatoService.getEstadisticasContratosV2(contrato).then(
             cb =>{
                 console.log(cb);
                 console.log('  estadisticas enviaddo   ...');
@@ -45,12 +45,12 @@ module.exports = {
         )
     },0);
     },
-    getListaPagos:(req,res,next)=>{
+    getListaPagos:async(req,res,next)=>{
         var contrato={
             id_usuario: req.query.id_usuario,
             id_contrato : req.query.id_contrato
         }
-        contatoService.getListaPagos(contrato,(cb)=>{
+        contatoService.getListaPagos(contrato,async(cb)=>{
             res.send(cb);
         })
     },
@@ -58,36 +58,36 @@ module.exports = {
         var contrato={
             id_usuario: req.query.id_usuario 
         }
-        setTimeout(async()=>{
-            await contatoService.getContratosV2(contrato).then(
-                cb => {
-                    console.log('   contratos enviados... ')
-                    res.send(cb);
-                }
-            );
-        },0);
-        // contatoService.getContratos(contrato,(cb)=>{
-        //     console.log('   contratos enviados... ')
-        //     res.send(cb);
-        // })
+        // setTimeout(async()=>{
+        //      contatoService.getContratos(contrato).then(
+        //         cb => {
+        //             console.log('   contratos enviados... ')
+        //             res.send(cb);
+        //         }
+        //     );
+        // },0);
+        contatoService.getContratos(contrato,(cb)=>{
+            console.log('   contratos enviados... ')
+            res.send(cb);
+        })
     },
     getCantidadContratos:  async (req,res,next)=>{
         var contrato={
             id_usuario: req.query.id_usuario 
         }
         console.log(req.query);
-        //   contatoService.getCantidadContratos(contrato,(cb)=>{
-        //     console.log(' cantidad contratos enviado...');
-        //     res.send(cb);
-        // })
-          setTimeout(async ()=>{
-             contatoService.getCantidadContratosV2(contrato).then(
-                cb => {
-                    console.log(' cantidad contratos enviado...');
-                    res.send(cb);
-                }
-                );
-          },0);
+          contatoService.getCantidadContratos(contrato,(cb)=>{
+            console.log(' cantidad contratos enviado...');
+            res.send(cb);
+        })
+        //   setTimeout( async()=>{
+        //      contatoService.getCantidadContratosV2(contrato).then(
+        //         cb => {
+        //             console.log(' cantidad contratos enviado...');
+        //             res.send(cb);
+        //         }
+        //         );
+        //   },0);
     },
     
     activarContrato:async(req,res,next)=>{
@@ -112,7 +112,7 @@ module.exports = {
         res.end(JSON.stringify(cb));
         })
     },
-    registrarPagoV2: async (req,res,next)=>{
+    registrarPagoV2:  async(req,res,next)=>{
         console.log( '.. registrat pago')
         var contrato={
             id_usuario: req.body.id_usuario,
@@ -121,7 +121,7 @@ module.exports = {
            // id_monedero : req.body.id_monedero
         }
         setTimeout(async function() { 
-            await contatoService.registrarPagoV3(contrato).then(
+             contatoService.registrarPagoV3(contrato).then(
                 cb => {
                     console.log(' .... pago guardado.')
                     res.end(JSON.stringify(cb));

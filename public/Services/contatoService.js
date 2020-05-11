@@ -1,8 +1,12 @@
 const contratoModel = require('../../database/contrato')();
 const monedaModel = require('../../database/monedaModel')();
 const pago_contratoModel = require('../../database/pago_contrato')();
-const cotizacionServide = require ('./cotizacionesService');
+var http = require('http');
+//const cotizacionServide = require ('./cotizacionesService');
 const mysql = require('../../database/mysql');
+var request = require('request');
+var host = '167.99.54.122';
+var port = '3001';
 connection = mysql.dbConnection();
 module.exports={
 
@@ -120,7 +124,7 @@ module.exports={
     //         return cb(res);
     //     })
     // },
-    getEstadisticasContratosV2:  async (contrato)=>{
+    getEstadisticasContratosV2: async  (contrato)=>{
         return new Promise((resolve,reject)=> {
             var linea ='SELECT SUM(F.eth_pagado) eth_pagado,SUM(F.cantidad) cantidad,SUM(F.contratos) contratos,F.status,SUM(F.eth_recibido) eth_recibido '+
             'FROM (SELECT id, SUM(C.cantidad) cantidad,IFNULL(SUM(C.eth_pagado),0) eth_pagado ,COUNT(1) '+
@@ -128,6 +132,7 @@ module.exports={
             'UNION SELECT null id,0 cantidad,IFNULL(null,0) eth_pagado,0 contratos,q.status status,SUM(P.eth_pagado) '+
             'FROM pagos_contratos P INNER JOIN contrato q ON P.id_contrato = q.id WHERE q.id_usuario = \''+contrato.id_usuario+'\''+
             'GROUP BY q.status)F GROUP BY F.status;'
+            console.log('linea estadisticas contrato..')
              connection.query(linea,(err,res,next)=>{
                  if(err) { console.log(err);}
                  console.log(res);
@@ -135,82 +140,82 @@ module.exports={
             })
         });
     },
-    // getContratos:  async (contrato,cb)=>{
-    //     var linea = `SELECT C.*,SUM(P.eth_pagado) as eth_recibido,M.monedero FROM contrato C LEFT  JOIN pagos_contratos P  
-    //     ON P.id_contrato = C.id INNER JOIN moneda M ON M.id=C.id_monedero WHERE C.id_usuario='${contrato.id_usuario}' GROUP BY C.id`;
-    //     console.log(' .. linea get contratos');
-    //     var aux = await connection.query(linea,(err,resp)=> {
-    //         if(err) {console.log(err);}
-    //        // console.log(resp);
-    //         return cb(resp);
-    //     });
-    // }, 
-    getContratosV2: async  (contrato)=>{
-        return new Promise((resolve,reject)=> {
-            var linea = `SELECT C.*,SUM(P.eth_pagado) as eth_recibido,M.monedero FROM contrato C LEFT  JOIN pagos_contratos P  
-            ON P.id_contrato = C.id INNER JOIN moneda M ON M.id=C.id_monedero WHERE C.id_usuario='${contrato.id_usuario}' GROUP BY C.id`;
-            console.log(' .. linea get contratos');
-                 connection.query(linea,(err,resp)=> {
-                if(err) {console.log(err);}
-               // console.log(resp);
-                 resolve(resp);
-            });
+    getContratos:  async (contrato,cb)=>{
+        var linea = `SELECT C.*,SUM(P.eth_pagado) as eth_recibido,M.monedero FROM contrato C LEFT  JOIN pagos_contratos P  
+        ON P.id_contrato = C.id INNER JOIN moneda M ON M.id=C.id_monedero WHERE C.id_usuario='${contrato.id_usuario}' GROUP BY C.id`;
+        console.log(' .. linea get contratos');
+        connection.query(linea,(err,resp)=> {
+            if(err) {console.log(err);}
+           // console.log(resp);
+            return cb(resp);
         });
     }, 
-    getCantidadContratosV2: async (contrato)=>{
-        return new Promise((resolve,reject)=> {
-            var linea =  `SELECT categoria,sum(cantidad) as cantidad FROM contrato WHERE id_usuario=? GROUP BY categoria`;
-            console.log('... linea get cantidad contratos');
-            var contratos = {
-                bajo : 0,
-                medio: 0,
-                alto : 0
-            }
-             connection.query(linea,[contrato.id_usuario],(err,res) => {
-                if ( err ) { console.log(err); } else {
-                    console.log('sql ok')
-                    res.forEach(element => {
-                        if(element.categoria === 'Bajo riesgo' ) {
-                            contratos.bajo = element.cantidad;
-                        }
-                        if(element.categoria === 'Medio riesgo' ) {
-                          contratos.medio = element.cantidad;
-                      }
-                      if(element.categoria === 'Alto riesgo' ) {
-                          contratos.alto = element.cantidad;
-                      }
-                    });
-                    return resolve(contratos);
+    // getContratosV2: async  (contrato)=>{
+    //     return new Promise((resolve,reject)=> {
+    //         var linea = `SELECT C.*,SUM(P.eth_pagado) as eth_recibido,M.monedero FROM contrato C LEFT  JOIN pagos_contratos P  
+    //         ON P.id_contrato = C.id INNER JOIN moneda M ON M.id=C.id_monedero WHERE C.id_usuario='${contrato.id_usuario}' GROUP BY C.id`;
+    //         console.log(' .. linea get contratos');
+    //              connection.query(linea,(err,resp)=> {
+    //             if(err) {console.log(err);}
+    //            // console.log(resp);
+    //              resolve(resp);
+    //         });
+    //     });
+    // }, 
+    // getCantidadContratosV2: async (contrato)=>{
+    //     return new Promise((resolve,reject)=> {
+    //         var linea =  `SELECT categoria,sum(cantidad) as cantidad FROM contrato WHERE id_usuario=? GROUP BY categoria`;
+    //         console.log('... linea get cantidad contratos');
+    //         var contratos = {
+    //             bajo : 0,
+    //             medio: 0,
+    //             alto : 0
+    //         }
+    //          connection.query(linea,[contrato.id_usuario],async(err,res) => {
+    //             if ( err ) { console.log(err); } else {
+    //                 console.log('sql ok')
+    //                 res.forEach(element => {
+    //                     if(element.categoria === 'Bajo riesgo' ) {
+    //                         contratos.bajo = element.cantidad;
+    //                     }
+    //                     if(element.categoria === 'Medio riesgo' ) {
+    //                       contratos.medio = element.cantidad;
+    //                   }
+    //                   if(element.categoria === 'Alto riesgo' ) {
+    //                       contratos.alto = element.cantidad;
+    //                   }
+    //                 });
+    //                 return resolve(contratos);
+    //             }
+    //         }) ;
+    //     });
+    //   },
+     getCantidadContratos: async(contrato,cb)=>{
+      var linea =  `SELECT categoria,sum(cantidad) as cantidad FROM contrato WHERE id_usuario=? GROUP BY categoria`;
+      console.log('... linea get cantidad contratos');
+      var contratos = {
+          bajo : 0,
+          medio: 0,
+          alto : 0
+      }
+      connection.query(linea,[contrato.id_usuario],(err,res) => {
+          if ( err ) { console.log(err); } else {
+              res.forEach(element => {
+                  if(element.categoria === 'Bajo riesgo' ) {
+                      contratos.bajo = element.cantidad;
+                  }
+                  if(element.categoria === 'Medio riesgo' ) {
+                    contratos.medio = element.cantidad;
                 }
-            }) ;
-        });
-      },
-    //  getCantidadContratos: async(contrato,cb)=>{
-    //   var linea =  `SELECT categoria,sum(cantidad) as cantidad FROM contrato WHERE id_usuario=? GROUP BY categoria`;
-    //   console.log('... linea get cantidad contratos');
-    //   var contratos = {
-    //       bajo : 0,
-    //       medio: 0,
-    //       alto : 0
-    //   }
-    //   connection.query(linea,[contrato.id_usuario],(err,res) => {
-    //       if ( err ) { console.log(err); } else {
-    //           res.forEach(element => {
-    //               if(element.categoria === 'Bajo riesgo' ) {
-    //                   contratos.bajo = element.cantidad;
-    //               }
-    //               if(element.categoria === 'Medio riesgo' ) {
-    //                 contratos.medio = element.cantidad;
-    //             }
-    //             if(element.categoria === 'Alto riesgo' ) {
-    //                 contratos.alto = element.cantidad;
-    //             }
-    //           });
-    //           return cb(contratos);
-    //       }
-    //   })  
-    // },
-    getListaPagos :(contrato,cb)=> {
+                if(element.categoria === 'Alto riesgo' ) {
+                    contratos.alto = element.cantidad;
+                }
+              });
+              return cb(contratos);
+          }
+      })  
+    },
+    getListaPagos :async(contrato,cb)=> {
         
         pago_contratoModel.findAll({     where: {  id_contrato      : contrato.id_contrato    }    })
         .then(
@@ -226,18 +231,47 @@ module.exports={
                             }
                             return cb(resSend);
                         }
-                        cotizacionServide.getCotizacion('Copay','ETH','USD',(cb2)=> {
-                            console.log('cb2')
-                            const resSend = {
-                                status: 780 ,
-                                pagos: res,
-                                N: res1[0].N,
-                                recibido:res1[0].recibido,
-                                promedio_recibido: parseFloat(res1[0].recibido)/parseFloat(res1[0].N),
-                                CopayUSD:  cb2['dataValues']
-                            }
+                        var proveedor = 'Copay';
+                        var symbol= 'ETH'
+                        var path = `/getCotizacion?proveedor=${proveedor}&base=USD&symbol=${symbol}`;
+ 
+                        var options = {
+                            host: host,
+                            port: port,
+                            path: path,
+                            method: 'GET',
+                            encoding: null
+                        };
+                        invocarServicio(options, null, function (data, err) {
+                            if (err) {
+                                next(null, err);
+                            } else {
+                                console.log('cotizacion bitstamp recibido ...')
+                                //console.log(data);
+                                const resSend = {
+                                    status: 780 ,
+                                    pagos: res,
+                                    N: res1[0].N,
+                                    recibido:res1[0].recibido,
+                                    promedio_recibido: parseFloat(res1[0].recibido)/parseFloat(res1[0].N),
+                                    CopayUSD:  data
+                                }
                             return cb(resSend);
+                            }
                         });
+                       
+                        // cotizacionServide.('Copay','ETH','USD',(cb2)=> {
+                        //     console.log('cb2')
+                        //     const resSend = {
+                        //         status: 780 ,
+                        //         pagos: res,
+                        //         N: res1[0].N,
+                        //         recibido:res1[0].recibido,
+                        //         promedio_recibido: parseFloat(res1[0].recibido)/parseFloat(res1[0].N),
+                        //         CopayUSD:  cb2['dataValues']
+                        //     }
+                        //     return cb(resSend);
+                        // });
                     });
                 } else{
                     const resSend = {
@@ -275,7 +309,7 @@ module.exports={
         return new Promise((resolve,reject) => {
             var linea = `SELECT SUM(cantidad) as cantidad FROM contrato where id_usuario=? and categoria=?`;
               console.log('linea registrar pagos ..');
-               connection.query(linea,[contrato.id_usuario,contrato.tipo_contrato],(err,resp)=>{
+                connection.query(linea,[contrato.id_usuario,contrato.tipo_contrato],(err,resp)=>{
                  if(err){ console.log(err) }
                  console.log('select ok.');
                  if( !resp ){
@@ -293,7 +327,7 @@ module.exports={
                          .then(
                              resp3 =>{     
                                  console.log('monedero    '+resp2[0].id_monedero);
-                                 monedaModel.findOne({where:{id: resp2[0].id_monedero}}).then(
+                                  monedaModel.findOne({where:{id: resp2[0].id_monedero}}).then(
                                      resFind => {
                                          console.log('respfind')
                                          console.log(resFind['dataValues']['importe']+'    '+contrato.eth_recibido);
@@ -537,3 +571,49 @@ module.exports={
 //     }
         
 }
+async function   invocarServicio(options, jsonObject, next) {
+    var req = await http.request(options, function(res) {
+        var contentType = res.headers['application/json; charset=utf-8'];
+        /**
+         * Variable para guardar los datos del servicio RESTfull.
+         */
+        var data = '';
+ 
+        res.on('data', function (chunk) {
+            // Cada vez que se recojan datos se agregan a la variable
+            data += chunk;
+        }).on('end', function () {
+            // Al terminar de recibir datos los procesamos
+            var response = null;
+            //response = data;
+
+            // // Nos aseguramos de que sea tipo JSON antes de convertirlo.
+            // if (contentType.indexOf('application/json') != -1) {
+            //     response = JSON.parse(data);
+            //     console.log(response);
+            // }
+            response = JSON.parse(data);
+            // Invocamos el next con los datos de respuesta
+            next(response, null);
+        })
+        .on('error', function(err) {
+            // Si hay errores los sacamos por consola
+            console.error('Error al procesar el mensaje: ' + err)
+        })
+        .on('uncaughtException', function (err) {
+            // Si hay alguna excepción no capturada la sacamos por consola
+            console.error(err);
+        });
+    }).on('error', function (err) {
+        // Si hay errores los sacamos por consola y le pasamos los errores a next.
+        console.error('HTTP request failed: ' + err);
+        next(null, err);
+    });
+ 
+    // Si la petición tiene datos estos se envían con la request
+    if (jsonObject) {
+        req.write(jsonObject);
+    }
+ 
+    req.end();
+};
