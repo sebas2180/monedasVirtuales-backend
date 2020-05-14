@@ -26,7 +26,7 @@ module.exports = {
             console.log('alt 4');
             res.send(sendInfo);
         }
-       // console.log(req.headers.authorization);
+         console.log(req.headers.authorization);
         var token = req.headers.authorization.split(' ')[1];
         token = token.split('"')[1];
         //console.log('token   ' +token);

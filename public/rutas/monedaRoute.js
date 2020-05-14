@@ -11,7 +11,7 @@ function usuarioRoute(app,passport){
 
     app.get('/getImportes',verifyToken.verificar, moneda.getImporte);
 
-    app.post('/addMoneda',verifyToken.verificar,moneda.addMoneda);
+    app.post('/addMoneda',verifyToken.verificar, moneda.addMoneda);
 
     app.post('/updateImporte',verifyToken.verificar,moneda.updateImporte);
 
@@ -24,6 +24,8 @@ function usuarioRoute(app,passport){
     app.get('/getIdMonederos', moneda.getIdMonederos);
 
     app.get('/getNombreMonedero', moneda.getNombreMonedero);
+
+    app.get('/getBuscarNombre', verifyToken.verificar,moneda.getBuscarNombre);
 }
 
 module.exports=usuarioRoute;

@@ -11,6 +11,16 @@ module.exports = {
             return res.send(callback);
         });
     },
+    getBuscarNombre :   (req,res,next)=>{
+        const monedero = {
+            nombre :req.query.nombre,
+            monedero : req.query.monedero,
+            id_usuario : req.query.id_usuario
+        }
+        monedaService.getBuscarNombre(monedero,(callback)=>{
+            return res.send(callback);
+        });
+    },
     getMoneda:  (req,res,next)=>{
         var moneda={
             id_usuario: req.query.id_usuario,
@@ -23,7 +33,7 @@ module.exports = {
     },
     getMonedas :  (req,res,next)=>{
         var sendMensaje = [];
-        var BTC = [] , ETH=[],LTC= [];
+        var BTC = [] , ETH=[],LTC= [];KL=[];
         var symbols = [];  
                console.log( ' get monedas ...');
                  monedaService.getRegistroMoneda(req.payload.usuario).then(
@@ -43,6 +53,10 @@ module.exports = {
                             ETH.push(element);
                             //console.log(BTC);
                         }
+                        if(element.symbol === 'KL'){
+                            KL.push(element);
+                            //console.log(BTC);
+                        }
                         if(element.symbol === 'LTC'){             
                             LTC.push(element);
                            // console.log(element);
@@ -54,7 +68,8 @@ module.exports = {
                                 sendMensaje={   status: 770,
                                                 BTC:BTC,
                                                 LTC:LTC,
-                                                ETC:ETH
+                                                ETC:ETH,
+                                                KL: KL
                                             };
                                             console.log(' monedas enviadas .....');
                                 return res.send(sendMensaje);
@@ -70,31 +85,70 @@ module.exports = {
             )
     },
     addMoneda :   (req,res,next)=>{
-        tipoMonedaService.getTipoMonedaPorNombre(req.body.nombre,(cb)=>{
-            moneda = {
+        tipoMonedaService.getTipoMonedaPorNombre(req.body.nombre,(cb1)=>{
+            console.log(cb1['dataValues']['symbol'])
+            const aux = {
                 nombre: req.body.nombre,
                 monedero: req.body.monedero,
-                symbol: cb['symbol'],
-                importe: req.body.importe,
-                id_usuario :  req.body.id_usuario,
-                cotizacion : 0
+                id_usuario :  req.body.id_usuario
+                //req.payload.id_usuario,
             }
-            transaccion = {
-                monto : req.body.monto,
-                cotizacion_usd : req.body.cotizacion_usd,
-                tipo_moneda : req.body.nombre,
-                tipo_operacion : req.body.tipo_operacion,
-                id_usuario : req.body.id_usuario,
-                id_monedero : req.body.monedero
-            }
-
-            monedaService.addMoneda(moneda,(resp)=>{
-                transaccionService.addTransaccion(transaccionService,(resp2)=>{
-                    console.log(resp2);
-                });
-                return res.end(JSON.stringify(resp));
+            monedaService.getBuscarNombre(aux,(cb0)=>{
+                //console.log('getBuscarNomobre completado. ...    '+cb0['status'] === 751)
+                if(cb0['status'] === 750 ) {
+                  //  console.log('no existe moneda');
+                        moneda = {
+                            nombre: req.body.nombre,
+                            monedero: req.body.monedero,
+                            symbol:  (cb1['dataValues']['symbol']),
+                            importe: 0 ,
+                            id_usuario :   req.body.id_usuario,
+                            cotizacion : 0,
+                            agrega_montos: req.body.agrega_montos
+                        }
+                        monedaService.addMoneda(moneda,(resp)=>{
+                            return res.end(JSON.stringify(resp));
+                        });
+                 } 
+                else {
+                   // console.log('agrega montos :      '+ req.body.agrega_montos ) ;
+                    if(cb0['status'] === 751 ) {
+                        if( req.body.agrega_montos  == 'false') {
+                            sendResp =  {
+                                 status: 752,
+                                 msj: 'Ya tienes un monedero con este nombre y tipo de moneda.'
+                            }
+                            return res.end(JSON.stringify(sendResp));
+                        } else {
+                            //console.log('SI existe moneda');
+                            moneda = {
+                                nombre: req.body.nombre,
+                                monedero: req.body.monedero,
+                                symbol: cb1['dataValues']['symbol'],
+                                importe: req.body.importe,
+                                id_usuario :  req.body.id_usuario,
+                                cotizacion : 0
+                            }
+                            transaccion = {
+                                monto : req.body.monto,
+                                cotizacion_usd : req.body.cotizacion_usd,
+                                tipo_moneda : req.body.nombre,
+                                tipo_operacion : req.body.tipo_operacion,
+                                id_usuario : req.body.id_usuario,
+                                id_monedero : req.body.monedero
+                            }
+                            monedaService.addMoneda(moneda,(resp)=>{
+                                transaccionService.addTransaccion(transaccionService,(resp2)=>{
+                                //    console.log(resp2);
+                                });
+                                return res.end(JSON.stringify(resp));
+                            });
+                        }
+                    }
+                }
+            });
             })
-        });
+
     },
     updateImporte :   (req,res,next)=>{
         transaccion = {

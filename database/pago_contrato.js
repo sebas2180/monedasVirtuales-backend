@@ -18,6 +18,10 @@ module.exports= () =>{
             type: Sequelize.FLOAT,
             notEmpty: true
         },
+        fecha: {
+            type: Sequelize.DATE,
+            notEmpty: true
+        },
         id_contrato: {
             type: Sequelize.INTEGER,
             notEmpty: false

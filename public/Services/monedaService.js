@@ -254,6 +254,28 @@ module.exports={
                     )
 
   }, 
+  getBuscarNombre: (monedero,callback) => {
+    monedaModel.findOne( { where: { nombre : monedero.nombre , monedero : monedero.monedero} } ).then(
+      res=> {
+       
+        if( res  == null){
+          const sendResp= {
+            status : 750,
+            msj: 'No se encontró monedero'
+          }
+          return callback(sendResp);
+        } else {
+          if( res  != null){
+            const sendResp= {
+              status : 751,
+              msj: 'Se encontró monedero'
+            }
+            return callback(sendResp);
+          }
+        }
+      }
+    )
+  }
 },
 
 function getBitcoin (mon,callback){

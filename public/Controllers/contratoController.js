@@ -118,6 +118,7 @@ module.exports = {
             id_usuario: req.body.id_usuario,
             tipo_contrato: req.body.tipo_contrato,
             eth_recibido: req.body.eth_recibido,
+            fecha: req.body.fecha
            // id_monedero : req.body.id_monedero
         }
         setTimeout(async function() { 
