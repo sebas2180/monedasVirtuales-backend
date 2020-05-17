@@ -135,7 +135,8 @@ module.exports = {
                                 tipo_moneda : req.body.nombre,
                                 tipo_operacion : req.body.tipo_operacion,
                                 id_usuario : req.body.id_usuario,
-                                id_monedero : req.body.monedero
+                                id_monedero : req.body.monedero,
+                                is_inversion : req.body.is_inversion
                             }
                             monedaService.addMoneda(moneda,(resp)=>{
                                 transaccionService.addTransaccion(transaccionService,(resp2)=>{
@@ -158,6 +159,7 @@ module.exports = {
             tipo_operacion : req.body.tipo_operacion,
             cotizacion_usd : req.body.cotizacion_usd,
             id_usuario : req.body.id_usuario,
+            is_inversion : req.body.is_inversion,
             id_monedero : req.body.monedero
         }
         console.log(transaccion);

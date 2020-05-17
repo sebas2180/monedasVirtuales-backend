@@ -21,6 +21,10 @@ module.exports= () =>{
             type: Sequelize.STRING,
             notEmpty: true
         },
+        is_inversion: {
+            type: Sequelize.STRING,
+            notEmpty: true
+        },
         tipo_operacion: {
             type: Sequelize.STRING,
             notEmpty: true

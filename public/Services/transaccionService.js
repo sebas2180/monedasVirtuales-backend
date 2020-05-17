@@ -14,6 +14,7 @@ module.exports={
         newTransaccion.tipo_moneda = trans.tipo_moneda;
         newTransaccion.tipo_operacion = trans.tipo_operacion;
         newTransaccion.id_usuario = trans.id_usuario;
+        newTransaccion.is_inversion = trans.is_inversion;
         newTransaccion.save().then(
             res=>{
                 if( res == 1){
